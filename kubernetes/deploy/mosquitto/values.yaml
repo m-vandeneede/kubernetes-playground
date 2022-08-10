@@ -1,0 +1,24 @@
+image:
+  repository: eclipse-mosquitto
+  tag:
+  pullPolicy: Always
+
+service:
+  main:
+    ports:
+      http:
+        enabled: false
+      mqtt:
+        enabled: true
+        port: 1883
+
+persistence:
+  data:
+    enabled: true
+    mountPath: /mosquitto
+    type: pvc
+    readOnly: false
+    storageClass: clusterstorage
+    accessMode: ReadWriteMany
+    size: 1Gi
+    retain: true

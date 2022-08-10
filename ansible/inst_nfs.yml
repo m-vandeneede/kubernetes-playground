@@ -1,0 +1,6 @@
+- hosts: "*"
+  become: yes
+  tasks:
+    - name: Install nfs utils
+      ansible.builtin.apt:
+        name: nfs-common

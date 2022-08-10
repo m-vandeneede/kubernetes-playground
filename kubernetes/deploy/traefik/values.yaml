@@ -1,0 +1,43 @@
+image:
+  name: traefik
+  tag: ""
+  pullPolicy: Always
+
+ingressRoute:
+  dashboard:
+    enabled: false
+
+globalArguments:
+  - "--global.checknewversion"
+
+ports:
+  traefik:
+    port: 9000
+    expose: false
+    exposedPort: 9000
+    protocol: TCP
+  web:
+    port: 8000
+    expose: true
+    exposedPort: 80
+    protocol: TCP
+  websecure:
+    port: 8443
+    expose: true
+    exposedPort: 443
+    protocol: TCP
+    tls:
+      enabled: false
+      options: ""
+      certResolver: ""
+      domains: []
+  mqtt:
+    port: 1883
+    expose: true
+    exposedPort: 1883
+    protocol: TCP
+  metrics:
+    port: 9100
+    expose: false
+    exposedPort: 9100
+    protocol: TCP
