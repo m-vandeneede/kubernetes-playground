@@ -1,0 +1,27 @@
+image:
+  repository: "pihole/pihole"
+  tag: ""
+  pullPolicy: Always
+
+persistentVolumeClaim:
+  enabled: true
+  accessModes:
+    - ReadWriteOnce
+  size: "5Gi"
+  storageClass: "clusterstorage"
+
+serviceWeb:
+  http:
+    enabled: true
+    port: 80
+
+serviceDns:
+  annotations:
+    metallb.universe.tf/allow-shared-ip: pihole-svc
+  type: LoadBalancer
+
+ingress:
+  enabled: true
+  path: /
+  hosts:
+    - pihole.kubernetes.org
