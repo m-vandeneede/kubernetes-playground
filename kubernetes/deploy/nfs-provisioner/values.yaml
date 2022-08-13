@@ -43,7 +43,7 @@ storageClass:
   # If it exists and has 'delete' value, delete the directory. If it exists and has 'retain' value, save the directory.
   # Overrides archiveOnDelete.
   # Ignored if value not set.
-  onDelete: delete
+  #onDelete: delete
 
   # Specifies a template for creating a directory path via PVC metadata's such as labels, annotations, name or namespace.
   # Ignored if value not set.
