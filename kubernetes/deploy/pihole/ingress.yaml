@@ -6,7 +6,7 @@ metadata:
   name: pihole
 spec:
   rules:
-  - host: pihole.kubernetes.org
+  - host: pihole.vandeneede.org
     http:
       paths:
       - backend:
