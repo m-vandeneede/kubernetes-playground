@@ -78,3 +78,7 @@ persistence:
 
     # -- Set to true to retain the PVC upon `helm uninstall`
     retain: true
+
+dnsConfig:
+  nameservers:
+  - 192.168.100.52
