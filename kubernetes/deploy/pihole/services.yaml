@@ -1,18 +1,14 @@
 apiVersion: v1
 kind: Service
 metadata:
+  annotations:
+    metallb.universe.tf/allow-shared-ip: pihole-svc
   name: pihole-dns-tcp
 spec:
   allocateLoadBalancerNodePorts: true
-  clusterIP: 10.43.0.187
-  clusterIPs:
-  - 10.43.0.187
   externalTrafficPolicy: Local
   healthCheckNodePort: 31234
   internalTrafficPolicy: Cluster
-  ipFamilies:
-  - IPv4
-  ipFamilyPolicy: SingleStack
   ports:
   - name: dns
     nodePort: 30988
@@ -22,28 +18,19 @@ spec:
   selector:
     app: pihole
     release: pihole
-  sessionAffinity: None
   type: LoadBalancer
-status:
-  loadBalancer:
-    ingress:
-    - ip: 192.168.100.52
 ---
 apiVersion: v1
 kind: Service
 metadata:
+  annotations:
+    metallb.universe.tf/allow-shared-ip: pihole-svc
   name: pihole-dns-udp
 spec:
   allocateLoadBalancerNodePorts: true
-  clusterIP: 10.43.113.154
-  clusterIPs:
-  - 10.43.113.154
   externalTrafficPolicy: Local
   healthCheckNodePort: 31703
   internalTrafficPolicy: Cluster
-  ipFamilies:
-  - IPv4
-  ipFamilyPolicy: SingleStack
   ports:
   - name: dns-udp
     nodePort: 31138
@@ -53,25 +40,14 @@ spec:
   selector:
     app: pihole
     release: pihole
-  sessionAffinity: None
   type: LoadBalancer
-status:
-  loadBalancer:
-    ingress:
-    - ip: 192.168.100.52
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: pihole-web
 spec:
-  clusterIP: 10.43.238.117
-  clusterIPs:
-  - 10.43.238.117
   internalTrafficPolicy: Cluster
-  ipFamilies:
-  - IPv4
-  ipFamilyPolicy: SingleStack
   ports:
   - name: http
     port: 80
@@ -84,5 +60,4 @@ spec:
   selector:
     app: pihole
     release: pihole
-  sessionAffinity: None
   type: ClusterIP
