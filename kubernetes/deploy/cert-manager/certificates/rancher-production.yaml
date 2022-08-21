@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: rancher-production-cert
+  namespace: cattle-system
+spec:
+  secretName: tls-rancher-ingress
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+  commonName: "rancher.vandeneede.org"
+  dnsNames:
+  - "rancher.vandeneede.org"

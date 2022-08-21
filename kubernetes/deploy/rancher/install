@@ -1,0 +1,8 @@
+helm install rancher rancher-latest/rancher 
+--namespace cattle-system 
+--set hostname=rancher.vandeneede.org 
+--set replicas=1 
+--set letsEncrypt.ingress.class=traefik-internal
+--set letsEncrypt.ingress.class=traefik
+--set ingress.extraAnnotations.'kubernetes\.io/ingress\.class'=traefik-internal
+--set tls=external
