@@ -2,14 +2,16 @@ apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRouteTCP
 metadata:
   name: mqtt-ingress
+  annotations: 
+    kubernetes.io/ingress.class: traefik-internal
 spec:
-  entryPoints:                  # [1]
+  entryPoints:
     - mqtt
-  routes:                       # [2]
-  - match: HostSNI(`*`)         # [3]
-    priority: 10                # [4]
-    services:                   # [7]
-    - name: mosquitto                 # [8]
-      port: 1883                # [9]
-      weight: 10                # [10]
-      terminationDelay: 400     # [11]
+  routes:
+  - match: HostSNI(`*`)
+    priority: 10
+    services:
+    - name: mosquitto
+      port: 1883
+      weight: 10
+      terminationDelay: 400

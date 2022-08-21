@@ -3,6 +3,7 @@ kind: Ingress
 metadata:
   annotations:
     traefik.ingress.kubernetes.io/router.middlewares: default-pihole-admin@kubernetescrd
+    kubernetes.io/ingress.class: traefik-internal
   name: pihole
 spec:
   rules:

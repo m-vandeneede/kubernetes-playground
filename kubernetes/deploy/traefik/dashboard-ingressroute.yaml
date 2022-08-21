@@ -1,12 +1,14 @@
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
-  name: dashboard
+  name: traefik-dashboard
+  annotations: 
+    kubernetes.io/ingress.class: traefik-internal
 spec:
   entryPoints:
-    - web
+    - websecure
   routes:
-    - match: Host(`traefik.vandeneede.org`) && (PathPrefix(`/dashboard`) || PathPrefix(`/api`))
+    - match: Host(`traefik.vandeneede.org`)
       kind: Rule
       services:
         - name: api@internal
