@@ -1,6 +1,6 @@
 image:
   repository: eclipse-mosquitto
-  tag:
+  tag: latest
   pullPolicy: Always
 
 service:

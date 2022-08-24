@@ -1,17 +1,16 @@
 image:
-  repository: louislam/uptime-kuma
+  repository: nodered/node-red
   tag: latest
   pullPolicy: Always
 
 env:
   TZ: UTC
-  UPTIME_KUMA_DISABLE_FRAME_SAMEORIGIN: 0
 
 service:
   main:
     ports:
       http:
-        port: 80
+        port: 1880
 
 ingress:
   main:
@@ -20,7 +19,7 @@ ingress:
       kubernetes.io/ingress.class: traefik-internal
     hosts:
       -
-        host: uptime.vandeneede.org
+        host: nodered.vandeneede.org
         paths:
           -
             path: /
@@ -30,13 +29,9 @@ persistence:
   config:
     enabled: true
     type: pvc
-    mountPath: /app/data
+    mountPath: /data
     readOnly: false
     storageClass: clusterstorage
     accessMode: ReadWriteMany
     size: 2Gi
     retain: true
-
-dnsConfig:
-  nameservers:
-  - 192.168.100.52
