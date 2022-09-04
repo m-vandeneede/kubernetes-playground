@@ -19,7 +19,7 @@ ingress:
       kubernetes.io/ingress.class: traefik-internal
     hosts:
       -
-        host: nodered-werktditnog.vandeneede.org
+        host: nodered.vandeneede.org
         paths:
           -
             path: /
