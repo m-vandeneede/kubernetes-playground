@@ -18,10 +18,10 @@ spec:
           image: nginx:alpine
           ports:
             - containerPort: 80
-          volumeMounts:
-            - name: nfs-helloworld # name of volume should match claimName volume
-              mountPath: /usr/share/nginx/html # mount inside of contianer
-      volumes:
-      - name: nfs-helloworld
-        persistentVolumeClaim:
-          claimName: pvc-helloworld
+          #volumeMounts:
+          #  - name: nfs-helloworld # name of volume should match claimName volume
+          #    mountPath: /usr/share/nginx/html # mount inside of contianer
+      #volumes:
+      #- name: nfs-helloworld
+      #  persistentVolumeClaim:
+      #    claimName: pvc-helloworld
