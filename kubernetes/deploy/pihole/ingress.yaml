@@ -2,7 +2,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
-    traefik.ingress.kubernetes.io/router.middlewares: default-pihole-admin@kubernetescrd
+    traefik.ingress.kubernetes.io/router.middlewares: pihole-pihole-admin@kubernetescrd
     kubernetes.io/ingress.class: traefik-internal
   name: pihole
 spec:
