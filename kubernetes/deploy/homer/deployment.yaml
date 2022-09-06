@@ -8,9 +8,13 @@ spec:
   revisionHistoryLimit: 3
   selector:
     matchLabels:
-      app.kubernetes.io/instance: homer
-      app.kubernetes.io/name: homer
+      app: homer
+      release: homer
   template:
+    metadata:
+      labels:
+        app: homer
+        release: homer
     spec:
       automountServiceAccountToken: true
       containers:
