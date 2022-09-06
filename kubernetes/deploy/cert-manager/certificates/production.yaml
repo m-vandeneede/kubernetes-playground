@@ -2,7 +2,7 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: vandeneede-production-cert
-  namespace: default
+  namespace: traefik-internal
 spec:
   secretName: vandeneede-org-production-tls
   issuerRef:

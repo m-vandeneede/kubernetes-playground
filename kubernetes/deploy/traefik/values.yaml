@@ -46,7 +46,7 @@ providers:
     enabled: true
     ingressClass: traefik-internal
     publishedService:
-      enabled: false
+      enabled: true
 
 service:
   enabled: true
