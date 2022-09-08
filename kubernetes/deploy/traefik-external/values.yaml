@@ -1,0 +1,55 @@
+image:
+  name: traefik
+  tag: ""
+  pullPolicy: Always
+
+ingressRoute:
+  dashboard:
+    enabled: false
+
+globalArguments:
+  - "--global.checknewversion"
+  - "--global.sendanonymoususage=false"
+additionalArguments:
+  - "--serversTransport.insecureSkipVerify=true"
+  - "--log.level=INFO"
+
+deployment:
+  enabled: true
+  replicas: 2
+
+ports:
+  web:
+    port: 8000
+    expose: true
+    exposedPort: 80
+    redirectTo: websecure
+    protocol: TCP
+  websecure:
+    port: 8443
+    expose: true
+    exposedPort: 443
+    protocol: TCP
+    tls:
+      enabled: true
+  mqtt:
+    port: 1883
+    expose: true
+    exposedPort: 1883
+    protocol: TCP
+
+providers:
+  kubernetesCRD:
+    enabled: true
+    ingressClass: traefik-external
+  kubernetesIngress:
+    enabled: true
+    ingressClass: traefik-external
+    publishedService:
+      enabled: true
+
+service:
+  enabled: true
+  type: LoadBalancer
+  spec:
+    loadBalancerIP: 192.168.100.55
