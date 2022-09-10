@@ -1,0 +1,43 @@
+image:
+  repository: linuxserver/grocy
+  tag: latest
+  pullPolicy: Always
+
+env:
+  TZ: UTC
+  PUID: "1000"
+  PGID: "1000"
+
+service:
+  main:
+    ports:
+      http:
+        port: 80
+
+ingress:
+  main:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: traefik-external
+    hosts:
+      -
+        host: grocy.vandeneede.org
+        paths:
+          -
+            path: /
+            pathType: Prefix
+
+persistence:
+  config:
+    enabled: true
+    type: pvc
+    mountPath: /config
+    readOnly: false
+    storageClass: clusterstorage
+    accessMode: ReadWriteMany
+    size: 2Gi
+    retain: true
+  viewcache:
+    enabled: true
+    type: emptyDir
+    mountPath: /config/data/viewcache

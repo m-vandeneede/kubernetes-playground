@@ -1,0 +1,14 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: vandeneede-production-cert
+  namespace: traefik-external
+spec:
+  secretName: vandeneede-org-production-tls
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+  commonName: "*.vandeneede.org"
+  dnsNames:
+  - "vandeneede.org"
+  - "*.vandeneede.org"
