@@ -13,3 +13,4 @@ spec:
     services:
     - name: files
       port: 8283
+      scheme: https
