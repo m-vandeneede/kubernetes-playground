@@ -1,0 +1,15 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: traefik-internal
+  name: zigbee2mqtt
+spec:
+  entryPoints:
+  - websecure
+  routes:
+  - kind: Rule
+    match: Host(`zigbee.vandeneede.org`)
+    services:
+    - name: zigbee2mqtt
+      port: 8080
