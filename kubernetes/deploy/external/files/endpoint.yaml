@@ -1,0 +1,10 @@
+kind: Endpoints
+apiVersion: v1
+metadata:
+  name: files
+subsets:
+  - addresses:
+      - ip: 192.168.100.4
+    ports:
+      - port: 8283
+        name: http

@@ -1,0 +1,10 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: files
+spec:
+  ports:
+  - protocol: TCP
+    port: 8283
+    name: http
+    targetPort: 8283
