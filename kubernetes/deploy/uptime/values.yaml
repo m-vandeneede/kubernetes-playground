@@ -23,10 +23,6 @@ ingress:
         paths:
           - path: /
             pathType: Prefix
-      - host: vandeneede.org
-        paths:
-          - path: /
-            pathType: Prefix
 
 persistence:
   config:
