@@ -13,4 +13,3 @@ spec:
     services:
     - name: truenas
       port: 80
-      scheme: https
