@@ -1,0 +1,10 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: netbox
+spec:
+  ports:
+  - protocol: TCP
+    port: 7000
+    name: http
+    targetPort: 7000

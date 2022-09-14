@@ -1,0 +1,10 @@
+kind: Endpoints
+apiVersion: v1
+metadata:
+  name: credigree
+subsets:
+  - addresses:
+      - ip: 192.168.3.24
+    ports:
+      - port: 8006
+        name: http

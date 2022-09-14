@@ -1,0 +1,10 @@
+kind: Endpoints
+apiVersion: v1
+metadata:
+  name: tegridy
+subsets:
+  - addresses:
+      - ip: 192.168.3.23
+    ports:
+      - port: 8006
+        name: http

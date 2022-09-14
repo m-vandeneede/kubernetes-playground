@@ -1,0 +1,10 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: southpark
+spec:
+  ports:
+  - protocol: TCP
+    port: 8006
+    name: http
+    targetPort: 8006

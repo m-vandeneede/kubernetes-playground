@@ -1,0 +1,10 @@
+kind: Endpoints
+apiVersion: v1
+metadata:
+  name: portainer
+subsets:
+  - addresses:
+      - ip: 192.168.100.3
+    ports:
+      - port: 9443
+        name: http
