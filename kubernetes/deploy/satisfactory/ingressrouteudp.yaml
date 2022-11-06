@@ -1,0 +1,44 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRouteUDP
+metadata:
+  name: factoryport-ingress
+  annotations: 
+    kubernetes.io/ingress.class: traefik-external
+spec:
+  entryPoints:
+    - factoryport
+  routes:
+  - services:
+    - name: satisfactory
+      port: 7777
+      weight: 10
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRouteUDP
+metadata:
+  name: factorybeacon-ingress
+  annotations: 
+    kubernetes.io/ingress.class: traefik-external
+spec:
+  entryPoints:
+    - factorybeacon
+  routes:
+  - services:
+    - name: satisfactory
+      port: 15000
+      weight: 10
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRouteUDP
+metadata:
+  name: factoryquery-ingress
+  annotations: 
+    kubernetes.io/ingress.class: traefik-external
+spec:
+  entryPoints:
+    - factoryquery
+  routes:
+  - services:
+    - name: satisfactory
+      port: 15777
+      weight: 10

@@ -32,18 +32,18 @@ ports:
     protocol: TCP
     tls:
       enabled: true
-  factorygamequery:
+  factoryquery:
     port: 15777
     expose: true
     exposedPort: 15777
     protocol: UDP
-  factorygamebeacon:
+  factorybeacon:
     port: 15000
     expose: true
     exposedPort: 15000
     protocol: UDP
-  factorygameport:
-    port: 15000
+  factoryport:
+    port: 7777
     expose: true
     exposedPort: 7777
     protocol: UDP
