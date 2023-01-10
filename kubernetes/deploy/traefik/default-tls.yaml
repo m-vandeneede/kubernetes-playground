@@ -1,0 +1,9 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: TLSStore
+metadata:
+  name: default-tls
+  namespace: traefik-internal
+
+spec:
+  defaultCertificate:
+    secretName: vandeneede-org-production-tls

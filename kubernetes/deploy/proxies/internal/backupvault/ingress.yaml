@@ -14,3 +14,5 @@ spec:
     - name: backupvault
       port: 5001
       scheme: https
+  tls:
+    secretName: backupvault-vandeneede-org-production-tls
