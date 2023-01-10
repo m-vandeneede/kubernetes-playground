@@ -1,0 +1,16 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: traefik-internal
+  name: backupvault
+spec:
+  entryPoints:
+  - websecure
+  routes:
+  - kind: Rule
+    match: Host(`web.backupvault.vandeneede.org`)
+    services:
+    - name: backupvault
+      port: 5001
+      scheme: https
