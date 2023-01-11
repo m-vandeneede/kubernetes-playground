@@ -9,10 +9,8 @@ spec:
   - websecure
   routes:
   - kind: Rule
-    match: Host(`web.backupvault.vandeneede.org`)
+    match: Host(`backupvault.vandeneede.org`)
     services:
     - name: backupvault
       port: 5001
       scheme: https
-  tls:
-    secretName: backupvault-vandeneede-org-production-tls

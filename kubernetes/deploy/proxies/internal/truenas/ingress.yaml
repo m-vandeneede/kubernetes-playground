@@ -9,7 +9,7 @@ spec:
   - websecure
   routes:
   - kind: Rule
-    match: Host(`truenas.vandeneede.org`)
+    match: Host(`vault.vandeneede.org`)
     services:
     - name: truenas
       port: 80
