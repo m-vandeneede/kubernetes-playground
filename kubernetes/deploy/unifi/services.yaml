@@ -60,7 +60,7 @@ spec:
   internalTrafficPolicy: Cluster
   ports:
   - name: http
-    port: 8080
+    port: 8443
     protocol: TCP
   selector:
     name: unifi
