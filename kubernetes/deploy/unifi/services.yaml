@@ -1,0 +1,67 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    metallb.universe.tf/allow-shared-ip: unifi-svc
+  name: unifi-tcp
+spec:
+  allocateLoadBalancerNodePorts: true
+  externalTrafficPolicy: Local
+  internalTrafficPolicy: Cluster
+  ports:
+  - name: controller
+    port: 8080
+    protocol: TCP
+    targetPort: controller
+  - name: speedtest
+    port: 6789
+    protocol: TCP
+    targetPort: speedtest
+  selector:
+    name: unifi
+  type: LoadBalancer
+  externalIPs:
+   - 192.168.100.53
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    metallb.universe.tf/allow-shared-ip: unifi-svc
+  name: unifi-udp
+spec:
+  allocateLoadBalancerNodePorts: true
+  externalTrafficPolicy: Local
+  internalTrafficPolicy: Cluster
+  ports:
+  - name: stun
+    port: 3478
+    protocol: UDP
+    targetPort: stun
+  - name: syslog
+    port: 5514
+    protocol: UDP
+    targetPort: syslog
+  - name: discovery
+    port: 10001
+    protocol: UDP
+    targetPort: discovery
+  selector:
+    name: unifi
+  type: LoadBalancer
+  externalIPs:
+   - 192.168.100.53
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: unifi-web
+spec:
+  internalTrafficPolicy: Cluster
+  ports:
+  - name: http
+    port: 8080
+    protocol: TCP
+  selector:
+    name: unifi
+  type: ClusterIP

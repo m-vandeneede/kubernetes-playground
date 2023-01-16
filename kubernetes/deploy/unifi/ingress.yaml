@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: traefik-internal
+  name: unifi
+spec:
+  rules:
+  - host: unifi.vandeneede.org
+    http:
+      paths:
+      - backend:
+          service:
+            name: unifi-web
+            port:
+              name: http
+        path: /
+        pathType: Prefix

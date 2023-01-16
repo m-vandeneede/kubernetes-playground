@@ -1,0 +1,97 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: unifi
+  name: unifi
+  namespace: unifi
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  selector:
+    matchLabels:
+      name: unifi
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        name: unifi
+    spec:
+      automountServiceAccountToken: true
+      containers:
+      - env:
+        - name: JVM_INIT_HEAP_SIZE
+        - name: JVM_MAX_HEAP_SIZE
+          value: 512M
+        - name: RUNAS_UID0
+          value: "false"
+        - name: TZ
+          value: UTC
+        - name: UNIFI_GID
+          value: "999"
+        - name: UNIFI_STDOUT
+          value: "true"
+        - name: UNIFI_UID
+          value: "999"
+        image: jacobalberty/unifi:v7.1.68
+        imagePullPolicy: Always
+        livenessProbe:
+          failureThreshold: 3
+          periodSeconds: 10
+          successThreshold: 1
+          tcpSocket:
+            port: 8443
+          timeoutSeconds: 1
+        name: unifi
+        ports:
+        - containerPort: 8080
+          name: controller
+          protocol: TCP
+        - containerPort: 10001
+          name: discovery
+          protocol: UDP
+        - containerPort: 8443
+          name: http
+          protocol: TCP
+        - containerPort: 6789
+          name: speedtest
+          protocol: TCP
+        - containerPort: 3478
+          name: stun
+          protocol: UDP
+        - containerPort: 5514
+          name: syslog
+          protocol: UDP
+        readinessProbe:
+          failureThreshold: 3
+          periodSeconds: 10
+          successThreshold: 1
+          tcpSocket:
+            port: 8443
+          timeoutSeconds: 1
+        startupProbe:
+          failureThreshold: 30
+          periodSeconds: 5
+          successThreshold: 1
+          tcpSocket:
+            port: 8443
+          timeoutSeconds: 1
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /unifi
+          name: config
+      dnsPolicy: ClusterFirst
+      enableServiceLinks: true
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        fsGroup: 999
+      serviceAccount: default
+      serviceAccountName: default
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: unifi
