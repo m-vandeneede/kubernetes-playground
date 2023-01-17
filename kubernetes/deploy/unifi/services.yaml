@@ -17,10 +17,6 @@ spec:
     port: 6789
     protocol: TCP
     targetPort: 6789
-  - name: web
-    port: 8443
-    protocol: TCP
-    targetPort: 8443
   selector:
     name: unifi
   type: LoadBalancer
