@@ -12,11 +12,15 @@ spec:
   - name: controller
     port: 8080
     protocol: TCP
-    targetPort: controller
+    targetPort: 8080
   - name: speedtest
     port: 6789
     protocol: TCP
-    targetPort: speedtest
+    targetPort: 6789
+  - name: web
+    port: 8443
+    protocol: TCP
+    targetPort: 8443
   selector:
     name: unifi
   type: LoadBalancer
@@ -37,15 +41,15 @@ spec:
   - name: stun
     port: 3478
     protocol: UDP
-    targetPort: stun
+    targetPort: 3478
   - name: syslog
     port: 5514
     protocol: UDP
-    targetPort: syslog
+    targetPort: 5514
   - name: discovery
     port: 10001
     protocol: UDP
-    targetPort: discovery
+    targetPort: 10001
   selector:
     name: unifi
   type: LoadBalancer
