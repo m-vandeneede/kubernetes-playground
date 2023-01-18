@@ -4,7 +4,7 @@ metadata:
   name: backupvault
 subsets:
   - addresses:
-      - ip: 192.168.3.28
+      - ip: 192.168.100.15
     ports:
       - port: 5001
         name: http
