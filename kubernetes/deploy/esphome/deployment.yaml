@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: esphome
+spec:
+  selector:
+    matchLabels:
+      app: esphome
+      release: esphome
+  template:
+    metadata:
+      labels:
+        app: esphome
+        release: esphome
+    spec:
+      containers:
+      - image: esphome/esphome:latest
+        imagePullPolicy: Always
+        name: esphome
+        ports:
+        - containerPort: 6052
+          name: http
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /config
+          name: config
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: esphome
