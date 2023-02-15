@@ -34,7 +34,7 @@ spec:
           value: "true"
         - name: UNIFI_UID
           value: "999"
-        image: jacobalberty/unifi:v7.1.68
+        image: jacobalberty/unifi:latest
         imagePullPolicy: Always
         livenessProbe:
           failureThreshold: 3
