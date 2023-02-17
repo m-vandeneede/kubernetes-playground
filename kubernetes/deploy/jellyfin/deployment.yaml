@@ -36,9 +36,9 @@ spec:
           claimName: jellyfin
       - name: shows
         nfs:
-          server: vault.storage.vandeneede.org
+          server: 192.168.100.4
           path: /mnt/PvtPool/Media/Shows
       - name: movies
         nfs:
-          server: vault.storage.vandeneede.org
+          server: 192.168.100.4
           path: /mnt/PvtPool/Media/Movies
