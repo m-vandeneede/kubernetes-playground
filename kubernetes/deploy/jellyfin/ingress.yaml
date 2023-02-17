@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: traefik-external
+  name: jellyfin
+spec:
+  rules:
+  - host: jellyfin.vandeneede.org
+    http:
+      paths:
+      - backend:
+          service:
+            name: jellyfin
+            port:
+              name: http
+        path: /
+        pathType: ImplementationSpecific
