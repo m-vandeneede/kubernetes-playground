@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jellyseerr
+spec:
+  selector:
+    matchLabels:
+      app: jellyseerr
+      release: jellyseerr
+  template:
+    metadata:
+      labels:
+        app: jellyseerr
+        release: jellyseerr
+    spec:
+      containers:
+      - image: fallenbagel/jellyseerr:latest
+        imagePullPolicy: Always
+        name: jellyseerr
+        ports:
+        - containerPort: 5055
+          name: http
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /app/config
+          name: config
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: jellyseerr
