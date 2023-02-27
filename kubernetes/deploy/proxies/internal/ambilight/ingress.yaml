@@ -11,5 +11,5 @@ spec:
   - kind: Rule
     match: Host(`ambilight.vandeneede.org`)
     services:
-    - name: backupvault
+    - name: ambilight
       port: 8090
