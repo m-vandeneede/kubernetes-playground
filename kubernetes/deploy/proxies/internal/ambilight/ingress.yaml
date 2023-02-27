@@ -3,13 +3,13 @@ kind: IngressRoute
 metadata:
   annotations:
     kubernetes.io/ingress.class: traefik-internal
-  name: backupvault
+  name: ambilight
 spec:
   entryPoints:
   - websecure
   routes:
   - kind: Rule
-    match: Host(`backupvault.vandeneede.org`)
+    match: Host(`ambilight.vandeneede.org`)
     services:
     - name: backupvault
-      port: 5000
+      port: 8090
