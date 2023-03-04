@@ -8,7 +8,7 @@ spec:
   resources:
     requests:
       storage: 25Gi
-  storageClassName: clusterstorage
+  storageClassName: clusterstorage-external
   volumeMode: Filesystem
 status:
   accessModes:
