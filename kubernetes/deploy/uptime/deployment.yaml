@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: uptime-kuma
+spec:
+  selector:
+    matchLabels:
+      app: uptime-kuma
+      release: uptime-kuma
+  template:
+    metadata:
+      labels:
+        app: uptime-kuma
+        release: uptime-kuma
+    spec:
+      dnsConfig:
+        nameservers:
+          - 192.168.100.50
+          - 1.1.1.1
+      containers:
+      - env:
+        - name: TZ
+          value: UTC
+        - name: UPTIME_KUMA_DISABLE_FRAME_SAMEORIGIN
+          value: "0"
+        - name: UPTIME_KUMA_PORT
+          value: "80"
+      - image: louislam/uptime-kuma:latest
+        imagePullPolicy: Always
+        name: uptime-kuma
+        ports:
+        - containerPort: 80
+          name: http
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /app/data
+          name: config
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: uptime-kuma
