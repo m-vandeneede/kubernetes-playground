@@ -10,7 +10,7 @@ nfs:
   server: 192.168.100.4
   path: /mnt/PvtPool/clusterstorage_external
   mountOptions: 
-    - nfsvers=3
+    - nfsvers=4
   volumeName: clusterstorage-external
   reclaimPolicy: Retain
 
