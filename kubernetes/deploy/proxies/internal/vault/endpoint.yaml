@@ -1,7 +1,7 @@
 kind: Endpoints
 apiVersion: v1
 metadata:
-  name: vault_stone
+  name: vaultstone
 subsets:
   - addresses:
       - ip: 192.168.3.40
@@ -12,7 +12,7 @@ subsets:
 kind: Endpoints
 apiVersion: v1
 metadata:
-  name: vault_sttwo
+  name: vaultsttwo
 subsets:
   - addresses:
       - ip: 192.168.3.41
@@ -23,7 +23,7 @@ subsets:
 kind: Endpoints
 apiVersion: v1
 metadata:
-  name: vault_clone
+  name: vaultclone
 subsets:
   - addresses:
       - ip: 192.168.100.40
@@ -34,7 +34,7 @@ subsets:
 kind: Endpoints
 apiVersion: v1
 metadata:
-  name: vault_cltwo
+  name: vaultcltwo
 subsets:
   - addresses:
       - ip: 192.168.100.41
