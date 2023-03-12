@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: traefik-internal
+  name: node-red
+spec:
+  rules:
+  - host: nodered.vandeneede.org
+    http:
+      paths:
+      - backend:
+          service:
+            name: node-red
+            port:
+              name: http
+        path: /
+        pathType: ImplementationSpecific
