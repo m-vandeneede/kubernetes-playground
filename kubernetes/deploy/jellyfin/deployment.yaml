@@ -36,9 +36,9 @@ spec:
           claimName: jellyfin
       - name: shows
         nfs:
-          server: 192.168.100.4
-          path: /mnt/PvtPool/Media/Shows
+          server: 192.168.100.41
+          path: /volume1/Media/Shows
       - name: movies
         nfs:
-          server: 192.168.100.4
-          path: /mnt/PvtPool/Media/Movies
+          server: 192.168.100.41
+          path: /volume1/Media/Movies
