@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grocy
+spec:
+  selector:
+    matchLabels:
+      app: grocy
+      release: grocy
+  template:
+    metadata:
+      labels:
+        app: grocy
+        release: grocy
+    spec:
+      containers:
+      - image: linuxserver/grocy:latest
+        imagePullPolicy: Always
+        name: grocy
+        ports:
+        - containerPort: 80
+          name: http
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /config
+          name: config
+        - mountPath: /config/data/viewcache
+          name: viewcache
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: grocy-config
+      - name: viewcache
+        emptydir: {}
