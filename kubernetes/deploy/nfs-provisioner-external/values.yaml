@@ -7,7 +7,7 @@ image:
   pullPolicy: Always
 
 nfs:
-  server: 192.168.100.4
+  server: 192.168.100.41
   path: /mnt/PvtPool/clusterstorage_external
   mountOptions: 
     - nfsvers=4
