@@ -8,10 +8,10 @@ image:
 imagePullSecrets: []
 
 nfs:
-  server: 192.168.100.4
-  path: /mnt/PvtPool/clusterstorage
+  server: 192.168.100.41
+  path: /volume2/ClusterStorage
   mountOptions: 
-    - nfsvers=3
+    - nfsvers=4
   volumeName: nfs-subdir-external-provisioner-root
   # Reclaim policy for the main nfs volume
   reclaimPolicy: Retain
