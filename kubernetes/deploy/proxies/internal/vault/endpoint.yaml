@@ -1,0 +1,43 @@
+kind: Endpoints
+apiVersion: v1
+metadata:
+  name: vault_stone
+subsets:
+  - addresses:
+      - ip: 192.168.3.40
+    ports:
+      - port: 5000
+        name: http
+---
+kind: Endpoints
+apiVersion: v1
+metadata:
+  name: vault_sttwo
+subsets:
+  - addresses:
+      - ip: 192.168.3.41
+    ports:
+      - port: 5000
+        name: http
+---
+kind: Endpoints
+apiVersion: v1
+metadata:
+  name: vault_clone
+subsets:
+  - addresses:
+      - ip: 192.168.100.40
+    ports:
+      - port: 5000
+        name: http
+---
+kind: Endpoints
+apiVersion: v1
+metadata:
+  name: vault_cltwo
+subsets:
+  - addresses:
+      - ip: 192.168.100.41
+    ports:
+      - port: 5000
+        name: http

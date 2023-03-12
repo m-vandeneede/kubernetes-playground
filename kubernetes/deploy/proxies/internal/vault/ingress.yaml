@@ -3,13 +3,13 @@ kind: IngressRoute
 metadata:
   annotations:
     kubernetes.io/ingress.class: traefik-internal
-  name: truenas
+  name: vault
 spec:
   entryPoints:
   - websecure
   routes:
   - kind: Rule
-    match: Host(`truenas.vandeneede.org`)
+    match: Host(`vault.vandeneede.org`)
     services:
-    - name: truenas
-      port: 80
+    - name: vault
+      port: 5000
