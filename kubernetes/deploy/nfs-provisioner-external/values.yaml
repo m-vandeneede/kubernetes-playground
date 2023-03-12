@@ -8,7 +8,7 @@ image:
 
 nfs:
   server: 192.168.100.41
-  path: /mnt/PvtPool/clusterstorage_external
+  path: /volume2/ClusterStorage_ext
   mountOptions: 
     - nfsvers=4
   volumeName: clusterstorage-external
