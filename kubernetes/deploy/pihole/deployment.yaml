@@ -69,7 +69,7 @@ spec:
         - 8.8.8.8
       dnsPolicy: None
       restartPolicy: Always
-      terminationGracePeriodSeconds: 30
+      terminationGracePeriodSeconds: 10
       volumes:
       - name: config
         persistentVolumeClaim:
