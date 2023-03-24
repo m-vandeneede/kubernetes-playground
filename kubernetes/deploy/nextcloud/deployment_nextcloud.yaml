@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nextcloud
+spec:
+  selector:
+    matchLabels:
+      app: nextcloud
+      release: nextcloud
+  template:
+    metadata:
+      labels:
+        app: nextcloud
+        release: nextcloud
+    spec:
+      #securityContext:
+      #  runAsUser: 0
+      #  fsGroup: 0
+      containers:
+      - image: nextcloud:latest
+        imagePullPolicy: Always
+        name: nextcloud
+        env:
+        - name: MYSQL_HOST
+          value: mariadb.nextcloud.svc.cluster.local
+        - name: MYSQL_USER
+          value: nextcloud
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mariadb-pwds
+              key: sql-pwd
+        - name: MYSQL_DATABASE
+          value: nextcloud
+        ports:
+        - containerPort: 80
+          name: http
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /var/www/html
+          name: nextcloud
+        - mountPath: /var/www/html/data
+          name: nextcloud-data
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: nextcloud
+        persistentVolumeClaim:
+          claimName: nextcloud
+      - name: nextcloud-data
+        nfs:
+          server: 192.168.100.41
+          path: /volume1/Nextcloud/Data

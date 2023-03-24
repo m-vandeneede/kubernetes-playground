@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: traefik-external
+  name: nextcloud
+spec:
+  rules:
+  - host: files.vandeneede.org
+    http:
+      paths:
+      - backend:
+          service:
+            name: nextcloud
+            port:
+              name: http
+        path: /
+        pathType: ImplementationSpecific

@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mariadb
+spec:
+  selector:
+    matchLabels:
+      app: mariadb
+      release: mariadb
+  template:
+    metadata:
+      labels:
+        app: mariadb
+        release: mariadb
+    spec:
+      containers:
+      - image: mariadb:10.5
+        imagePullPolicy: Always
+        name: mariadb
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mariadb-pwds
+              key: root-pwd
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mariadb-pwds
+              key: sql-pwd
+        - name: MYSQL_DATABASE
+          value: nextcloud
+        - name: MYSQL_USER
+          value: nextcloud
+        ports:
+        - containerPort: 3306
+          name: sql
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /var/lib/mysql
+          name: database
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: database
+        persistentVolumeClaim:
+          claimName: mariadb

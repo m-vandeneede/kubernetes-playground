@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mariadb
+spec:
+  internalTrafficPolicy: Cluster
+  ports:
+  - name: sql
+    port: 3306
+    protocol: TCP
+    targetPort: sql
+  selector:
+    app: mariadb
+    release: mariadb
+  type: ClusterIP
