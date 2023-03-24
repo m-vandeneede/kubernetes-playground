@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zigbee2mqtt
+spec:
+  selector:
+    matchLabels:
+      app: zigbee2mqtt
+      release: zigbee2mqtt
+  template:
+    metadata:
+      labels:
+        app: zigbee2mqtt
+        release: zigbee2mqtt
+    spec:
+      containers:
+      - image: koenkk/zigbee2mqtt:latest
+        imagePullPolicy: Always
+        name: zigbee2mqtt
+        env:
+        - name: "TZ"
+          value: "Europe/Brussels"
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /app/data
+          name: config
+        - mountPath: /dev/ttyUSB0
+          name: dongle
+        securityContext:
+          privileged: true
+      restartPolicy: Always
+      nodeName: garrison
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: zigbee2mqtt
+      - name: dongle
+        hostPath:
+          path: /dev/ttyUSB0
