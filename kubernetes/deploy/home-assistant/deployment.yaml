@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: home-assistant
+spec:
+  selector:
+    matchLabels:
+      app: home-assistant
+      release: home-assistant
+  template:
+    metadata:
+      labels:
+        app: home-assistant
+        release: home-assistant
+    spec:
+      containers:
+      - image: homeassistant/home-assistant:stable
+        imagePullPolicy: Always
+        name: home-assistant
+        env:
+        - name: TZ
+          value: "Europe/Brussels"
+        ports:
+        - containerPort: 8123
+          name: http
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /config
+          name: config
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: home-assistant
