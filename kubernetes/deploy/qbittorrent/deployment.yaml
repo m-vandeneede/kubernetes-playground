@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qbittorrent
+spec:
+  selector:
+    matchLabels:
+      app: qbittorrent
+      release: qbittorrent
+  template:
+    metadata:
+      labels:
+        app: qbittorrent
+        release: qbittorrent
+    spec:
+      containers:
+      - image: linuxserver/qbittorrent:latest
+        imagePullPolicy: Always
+        name: qbittorrent
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /config
+          name: config
+        - mountPath: /downloads
+          name: downloads
+        env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: qbittorrent
+      - name: downloads
+        nfs:
+          server: 192.168.100.40
+          path: /volume1/Media
