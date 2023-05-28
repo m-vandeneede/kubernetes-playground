@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: radarr
+spec:
+  selector:
+    matchLabels:
+      app: radarr
+      release: radarr
+  template:
+    metadata:
+      labels:
+        app: radarr
+        release: radarr
+    spec:
+      containers:
+      - image: linuxserver/radarr:latest
+        imagePullPolicy: Always
+        name: radarr
+        ports:
+        - containerPort: 7878
+          name: http
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /config
+          name: config
+        - mountPath: /data
+          name: media
+        env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: radarr
+      - name: media
+        nfs:
+          server: 192.168.100.40
+          path: /volume1/Media
