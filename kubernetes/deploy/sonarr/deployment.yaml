@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sonarr
+spec:
+  selector:
+    matchLabels:
+      app: sonarr
+      release: sonarr
+  template:
+    metadata:
+      labels:
+        app: sonarr
+        release: sonarr
+    spec:
+      containers:
+      - image: linuxserver/sonarr:latest
+        imagePullPolicy: Always
+        name: sonarr
+        ports:
+        - containerPort: 8989
+          name: http
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /config
+          name: config
+        - mountPath: /data
+          name: media
+        env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: sonarr
+      - name: media
+        nfs:
+          server: 192.168.100.40
+          path: /volume1/Media
