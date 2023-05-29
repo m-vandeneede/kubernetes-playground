@@ -13,6 +13,24 @@ spec:
         app: jellyfin
         release: jellyfin
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: machine
+                operator: In
+                values:
+                - southpark
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - qbittorrent
+            topologyKey: "kubernetes.io/hostname"
       containers:
       - image: linuxserver/jellyfin:latest
         imagePullPolicy: Always

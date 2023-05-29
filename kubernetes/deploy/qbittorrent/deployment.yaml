@@ -13,6 +13,24 @@ spec:
         app: qbittorrent
         release: qbittorrent
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: machine
+                operator: In
+                values:
+                - credigree
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - jellyfin
+            topologyKey: "kubernetes.io/hostname"
       containers:
       - image: linuxserver/qbittorrent:latest
         imagePullPolicy: Always
