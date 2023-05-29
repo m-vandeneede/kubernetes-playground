@@ -39,5 +39,5 @@ spec:
           claimName: radarr
       - name: media
         nfs:
-          server: 192.168.100.40
+          server: 192.168.100.41
           path: /volume1/Media
