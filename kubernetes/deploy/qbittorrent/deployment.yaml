@@ -22,7 +22,7 @@ spec:
                 operator: In
                 values:
                 - credigree  
-      podAntiAffinity:
+        podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
           - labelSelector:
               matchExpressions:
