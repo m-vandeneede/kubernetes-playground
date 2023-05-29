@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prowlarr
+spec:
+  selector:
+    matchLabels:
+      app: prowlarr
+      release: prowlarr
+  template:
+    metadata:
+      labels:
+        app: prowlarr
+        release: prowlarr
+    spec:
+      containers:
+      - image: linuxserver/prowlarr:latest
+        imagePullPolicy: Always
+        name: prowlarr
+        ports:
+        - containerPort: 9696
+          name: http
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /config
+          name: config
+        env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: prowlarr
