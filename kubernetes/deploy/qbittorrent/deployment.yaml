@@ -24,7 +24,7 @@ spec:
         volumeMounts:
         - mountPath: /config
           name: config
-        - mountPath: /downloads
+        - mountPath: /data
           name: downloads
         env:
         - name: PUID
