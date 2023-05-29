@@ -18,11 +18,11 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: machine
+              - key: hardware
                 operator: In
                 values:
-                - credigree
-        podAntiAffinity:
+                - credigree  
+      podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
           - labelSelector:
               matchExpressions:
