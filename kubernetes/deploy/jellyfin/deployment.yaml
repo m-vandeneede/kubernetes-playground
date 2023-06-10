@@ -21,7 +21,7 @@ spec:
         # Bit of a security concern since application is externally available
         securityContext:
           privileged: true
-          
+
         ports:
         - containerPort: 8096
           name: http
@@ -52,6 +52,8 @@ spec:
         nfs:
           server: 192.168.100.40
           path: /volume1/Media/Movies
+      
+      # Ensure device has rwx perms for other users on host (chmod -R o+rwx /dev/drive/card1)
       - name: card
         hostPath:
           path: /dev/dri/card1
