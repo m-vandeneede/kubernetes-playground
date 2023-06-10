@@ -1,0 +1,10 @@
+kind: Endpoints
+apiVersion: v1
+metadata:
+  name: sabnzbd
+subsets:
+  - addresses:
+      - ip: 192.168.3.40
+    ports:
+      - port: 8080
+        name: http
