@@ -17,6 +17,8 @@ spec:
       - image: linuxserver/jellyfin:latest
         imagePullPolicy: Always
         name: jellyfin
+        securityContext:
+          privileged: true
         ports:
         - containerPort: 8096
           name: http
@@ -34,8 +36,6 @@ spec:
           name: renderer
       restartPolicy: Always
       nodeName: mackey
-      securityContext:
-        privileged: true
       terminationGracePeriodSeconds: 30
       volumes:
       - name: config
