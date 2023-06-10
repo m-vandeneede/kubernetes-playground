@@ -13,24 +13,6 @@ spec:
         app: jellyfin
         release: jellyfin
     spec:
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-            - matchExpressions:
-              - key: hardware
-                operator: In
-                values:
-                - southpark
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
-              - key: app
-                operator: In
-                values:
-                - qbittorrent
-            topologyKey: "kubernetes.io/hostname"
       containers:
       - image: linuxserver/jellyfin:latest
         imagePullPolicy: Always
@@ -47,6 +29,7 @@ spec:
         - mountPath: /data/movies
           name: movies
       restartPolicy: Always
+      nodeName: mackey
       terminationGracePeriodSeconds: 30
       volumes:
       - name: config

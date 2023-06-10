@@ -1,0 +1,10 @@
+- hosts: "node"
+  become: yes
+  tasks:
+    - name: Install Linux-Generic
+      ansible.builtin.apt:
+        name: linux-generic
+    - name: Load kernel module CDC-ACM
+      community.general.modprobe:
+        name: cdc-acm
+        persistent: present
