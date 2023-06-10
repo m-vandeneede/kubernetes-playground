@@ -28,8 +28,14 @@ spec:
           name: shows
         - mountPath: /data/movies
           name: movies
+        - mountPath: /dev/dri/card1
+          name: card
+        - mountPath: /dev/dri/renderD128
+          name: renderer
       restartPolicy: Always
       nodeName: mackey
+      securityContext:
+        privileged: true
       terminationGracePeriodSeconds: 30
       volumes:
       - name: config
@@ -43,3 +49,9 @@ spec:
         nfs:
           server: 192.168.100.40
           path: /volume1/Media/Movies
+      - name: card
+        hostPath:
+          path: /dev/dri/card1
+      - name: renderer
+        hostPath:
+          path: /dev/dri/renderD128
