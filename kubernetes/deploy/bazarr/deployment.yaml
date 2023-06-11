@@ -1,29 +1,33 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: prowlarr
+  name: bazarr
 spec:
   selector:
     matchLabels:
-      app: prowlarr
-      release: prowlarr
+      app: bazarr
+      release: bazarr
   template:
     metadata:
       labels:
-        app: prowlarr
-        release: prowlarr
+        app: bazarr
+        release: bazarr
     spec:
       containers:
-      - image: linuxserver/prowlarr:latest
+      - image: linuxserver/bazarr:latest
         imagePullPolicy: Always
-        name: prowlarr
+        name: bazarr
         ports:
-        - containerPort: 9696
+        - containerPort: 6767
           name: http
           protocol: TCP
         volumeMounts:
         - mountPath: /config
           name: config
+        - mountPath: /movies
+          name: movies
+        - mountPath: /tv
+          name: shows
         env:
         - name: PUID
           value: "1000"
@@ -43,4 +47,12 @@ spec:
       volumes:
       - name: config
         persistentVolumeClaim:
-          claimName: prowlarr
+          claimName: bazarr
+      - name: movies
+        nfs:
+          server: 192.168.100.41
+          path: /volume1/Media/Movies
+      - name: shows
+        nfs:
+          server: 192.168.100.41
+          path: /volume1/Media/Shows

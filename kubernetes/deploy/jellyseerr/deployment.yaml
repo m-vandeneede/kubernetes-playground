@@ -25,6 +25,15 @@ spec:
         - mountPath: /app/config
           name: config
       restartPolicy: Always
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: hardware
+                operator: In
+                values:
+                - southpark
       terminationGracePeriodSeconds: 30
       volumes:
       - name: config

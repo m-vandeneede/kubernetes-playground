@@ -32,6 +32,15 @@ spec:
         - name: PGID
           value: "1000"
       restartPolicy: Always
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: hardware
+                operator: In
+                values:
+                - credigree
       terminationGracePeriodSeconds: 30
       volumes:
       - name: config
