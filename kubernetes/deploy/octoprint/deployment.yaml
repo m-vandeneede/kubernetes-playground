@@ -47,4 +47,4 @@ spec:
           path: /dev/ttyUSB0
       - name: camera
         hostPath:
-          path: /dev/video1
+          path: /dev/video0
