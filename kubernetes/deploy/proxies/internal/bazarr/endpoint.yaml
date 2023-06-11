@@ -1,0 +1,10 @@
+kind: Endpoints
+apiVersion: v1
+metadata:
+  name: bazarr
+subsets:
+  - addresses:
+      - ip: 192.168.3.40
+    ports:
+      - port: 6767
+        name: http
