@@ -39,36 +39,6 @@ spec:
           value: "0"
         - name: UPTIME_KUMA_PORT
           value: "80"
-        
-        # --- Security ---
-        securityContext:
-          allowPrivilegeEscalation: false
-          readOnlyRootFilesystem: true
-          capabilities:
-            drop:
-              - NET_RAW
-        # ---------------
-
-        # --- Probes ---
-        readinessProbe:
-          failureThreshold: 6
-          successThreshold: 1
-          initialDelaySeconds: 0
-          timeoutSeconds: 1
-          periodSeconds: 5
-          httpGet:
-            scheme: HTTP
-            port: 80
-            path: /status/general
-        livenessProbe:
-          failureThreshold: 6
-          successThreshold: 1
-          initialDelaySeconds: 0
-          timeoutSeconds: 1
-          periodSeconds: 5
-          tcpSocket:
-            port: 80
-        # ---------------
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       volumes:
