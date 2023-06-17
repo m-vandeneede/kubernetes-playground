@@ -32,6 +32,26 @@ spec:
           name: dongle
         securityContext:
           privileged: true
+        # --- Probes ---
+        readinessProbe:
+          failureThreshold: 6
+          successThreshold: 1
+          initialDelaySeconds: 0
+          timeoutSeconds: 1
+          periodSeconds: 5
+          httpGet:
+            scheme: HTTP
+            port: 8080
+            path: /
+        livenessProbe:
+          failureThreshold: 6
+          successThreshold: 1
+          initialDelaySeconds: 0
+          timeoutSeconds: 1
+          periodSeconds: 5
+          tcpSocket:
+            port: 8080
+        # ---------------
       restartPolicy: Always
       nodeName: garrison
       terminationGracePeriodSeconds: 30
