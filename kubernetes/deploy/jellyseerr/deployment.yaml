@@ -13,6 +13,7 @@ spec:
         app: jellyseerr
         release: jellyseerr
     spec:
+      automountServiceAccountToken: false
       containers:
       - image: fallenbagel/jellyseerr:latest
         imagePullPolicy: Always

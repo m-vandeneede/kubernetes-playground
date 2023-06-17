@@ -13,6 +13,7 @@ spec:
         app: zigbee2mqtt
         release: zigbee2mqtt
     spec:
+      automountServiceAccountToken: false
       containers:
       - image: koenkk/zigbee2mqtt:latest
         imagePullPolicy: Always

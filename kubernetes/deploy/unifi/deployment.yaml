@@ -18,7 +18,7 @@ spec:
       labels:
         name: unifi
     spec:
-      automountServiceAccountToken: true
+      automountServiceAccountToken: false
       containers:
       - env:
         - name: JVM_INIT_HEAP_SIZE

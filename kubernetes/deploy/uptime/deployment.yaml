@@ -13,6 +13,7 @@ spec:
         app: uptime-kuma
         release: uptime-kuma
     spec:
+      automountServiceAccountToken: false
       dnsConfig:
         nameservers:
         - 192.168.100.50

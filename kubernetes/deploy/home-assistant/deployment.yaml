@@ -13,6 +13,7 @@ spec:
         app: home-assistant
         release: home-assistant
     spec:
+      automountServiceAccountToken: false
       containers:
       - image: homeassistant/home-assistant:stable
         imagePullPolicy: Always

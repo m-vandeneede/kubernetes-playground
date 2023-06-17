@@ -13,6 +13,7 @@ spec:
         app: pihole
         release: pihole
     spec:
+      automountServiceAccountToken: false
       containers:
       - env:
         - name: WEB_PORT

@@ -13,6 +13,7 @@ spec:
         app: nextcloud
         release: nextcloud
     spec:
+      automountServiceAccountToken: false
       #securityContext:
       #  runAsUser: 0
       #  fsGroup: 0

@@ -13,6 +13,7 @@ spec:
         app: qbittorrent
         release: qbittorrent
     spec:
+      automountServiceAccountToken: false
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:

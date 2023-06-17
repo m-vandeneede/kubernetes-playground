@@ -13,6 +13,7 @@ spec:
         app: grocy
         release: grocy
     spec:
+      automountServiceAccountToken: false
       containers:
       - image: linuxserver/grocy:latest
         imagePullPolicy: Always

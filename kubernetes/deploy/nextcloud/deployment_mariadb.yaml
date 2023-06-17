@@ -13,6 +13,7 @@ spec:
         app: mariadb
         release: mariadb
     spec:
+      automountServiceAccountToken: false
       containers:
       - image: mariadb:10.5
         imagePullPolicy: Always

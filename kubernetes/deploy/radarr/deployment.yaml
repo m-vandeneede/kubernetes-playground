@@ -13,6 +13,7 @@ spec:
         app: radarr
         release: radarr
     spec:
+      automountServiceAccountToken: false
       containers:
       - image: linuxserver/radarr:latest
         imagePullPolicy: Always

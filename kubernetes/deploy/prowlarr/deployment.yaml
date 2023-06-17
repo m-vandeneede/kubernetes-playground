@@ -13,6 +13,7 @@ spec:
         app: prowlarr
         release: prowlarr
     spec:
+      automountServiceAccountToken: false
       containers:
       - image: linuxserver/prowlarr:latest
         imagePullPolicy: Always

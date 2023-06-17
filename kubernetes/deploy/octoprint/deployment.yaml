@@ -13,6 +13,7 @@ spec:
         app: octoprint
         release: octoprint
     spec:
+      automountServiceAccountToken: false
       containers:
       - image: octoprint/octoprint:latest
         imagePullPolicy: Always

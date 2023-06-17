@@ -16,7 +16,7 @@ spec:
         app: homer
         release: homer
     spec:
-      automountServiceAccountToken: true
+      automountServiceAccountToken: false
       containers:
       - env:
         - name: TZ

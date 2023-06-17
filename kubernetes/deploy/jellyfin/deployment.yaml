@@ -13,6 +13,7 @@ spec:
         app: jellyfin
         release: jellyfin
     spec:
+      automountServiceAccountToken: false
       containers:
       - image: linuxserver/jellyfin:latest
         imagePullPolicy: Always

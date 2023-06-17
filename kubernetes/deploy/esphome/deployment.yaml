@@ -13,6 +13,7 @@ spec:
         app: esphome
         release: esphome
     spec:
+      automountServiceAccountToken: false
       containers:
       - image: esphome/esphome:latest
         imagePullPolicy: Always

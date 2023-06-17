@@ -16,7 +16,7 @@ spec:
         app: node-red
         release: node-red
     spec:
-      automountServiceAccountToken: true
+      automountServiceAccountToken: false
       containers:
       - env:
         - name: TZ

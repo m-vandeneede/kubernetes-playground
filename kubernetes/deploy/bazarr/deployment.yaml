@@ -13,6 +13,7 @@ spec:
         app: bazarr
         release: bazarr
     spec:
+      automountServiceAccountToken: false
       containers:
       - image: linuxserver/bazarr:latest
         imagePullPolicy: Always

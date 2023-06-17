@@ -13,6 +13,7 @@ spec:
         app: sonarr
         release: sonarr
     spec:
+      automountServiceAccountToken: false
       containers:
       - image: linuxserver/sonarr:latest
         imagePullPolicy: Always
