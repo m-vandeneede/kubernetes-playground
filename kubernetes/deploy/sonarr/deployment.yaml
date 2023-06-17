@@ -32,6 +32,26 @@ spec:
           value: "1000"
         - name: PGID
           value: "1000"
+        # --- Probes ---
+        readinessProbe:
+          failureThreshold: 6
+          successThreshold: 1
+          initialDelaySeconds: 0
+          timeoutSeconds: 1
+          periodSeconds: 5
+          httpGet:
+            scheme: HTTP
+            port: 8989
+            path: /login?returnUrl=
+        livenessProbe:
+          failureThreshold: 6
+          successThreshold: 1
+          initialDelaySeconds: 0
+          timeoutSeconds: 1
+          periodSeconds: 5
+          tcpSocket:
+            port: 8989
+        # ---------------
       restartPolicy: Always
       affinity:
         nodeAffinity:

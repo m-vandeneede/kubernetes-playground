@@ -36,13 +36,6 @@ spec:
           value: "999"
         image: jacobalberty/unifi:latest
         imagePullPolicy: Always
-        livenessProbe:
-          failureThreshold: 3
-          periodSeconds: 10
-          successThreshold: 1
-          tcpSocket:
-            port: 8443
-          timeoutSeconds: 1
         name: unifi
         ports:
         - containerPort: 8080
@@ -63,7 +56,16 @@ spec:
         - containerPort: 5514
           name: syslog
           protocol: UDP
+        
+        # --- Probes ---
         readinessProbe:
+          failureThreshold: 3
+          periodSeconds: 10
+          successThreshold: 1
+          tcpSocket:
+            port: 8443
+          timeoutSeconds: 1
+        livenessProbe:
           failureThreshold: 3
           periodSeconds: 10
           successThreshold: 1
@@ -77,6 +79,7 @@ spec:
           tcpSocket:
             port: 8443
           timeoutSeconds: 1
+        # ---------------
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
         volumeMounts:
