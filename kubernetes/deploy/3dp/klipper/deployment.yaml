@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: klipper
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: klipper
+      release: klipper
+  template:
+    metadata:
+      labels:
+        app: klipper
+        release: klipper
+    spec:
+      automountServiceAccountToken: false
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      nodeName: chef
+      containers:
+        # --- General ---
+      - image: mkuf/klipper:latest
+        imagePullPolicy: Always
+        name: klipper
+        securityContext:
+          privileged: true # Required for printer serial access
+        # ---------------
+
+        # --- Mounts ---
+        volumeMounts:
+        - name: printer
+          mountPath: /dev/ttyUSB0
+        - name: gcode
+          mountPath: /opt/printer_data/gcodes
+        - name: sock
+          mountPath: /opt/printer_data/run
+        - name: config
+          mountPath: /opt/printer_data/config
+          
+        # ---------------
+      volumes:
+      - name: printer
+        hostPath:
+          path: /dev/ttyUSB0
+      - name: gcode
+        persistentVolumeClaim:
+          claimName: gcode
+      - name: sock
+        hostPath:
+          path: /opt/printer_data/run
+      - name: config
+        persistentVolumeClaim:
+          claimName: klipper

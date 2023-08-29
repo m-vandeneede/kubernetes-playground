@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mainsail
+spec:
+  selector:
+    matchLabels:
+      app: mainsail
+      release: mainsail
+  template:
+    metadata:
+      labels:
+        app: mainsail
+        release: mainsail
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - image: ghcr.io/mainsail-crew/mainsail:latest
+        imagePullPolicy: Always
+        name: mainsail
+        ports:
+        - containerPort: 80
+          name: http
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /usr/share/nginx/html/config.json
+          subPath: config.json
+          name: config
+
+        # --- Security ---
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - NET_RAW
+        # ---------------
+
+        # --- Probes ---
+        readinessProbe:
+          failureThreshold: 6
+          successThreshold: 1
+          initialDelaySeconds: 0
+          timeoutSeconds: 1
+          periodSeconds: 5
+          httpGet:
+            scheme: HTTP
+            port: 80
+            path: /
+        livenessProbe:
+          failureThreshold: 6
+          successThreshold: 1
+          initialDelaySeconds: 0
+          timeoutSeconds: 1
+          periodSeconds: 5
+          tcpSocket:
+            port: 80
+        # ---------------
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: mainsail

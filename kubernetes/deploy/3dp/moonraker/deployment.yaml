@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: moonraker
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: moonraker
+      release: moonraker
+  template:
+    metadata:
+      labels:
+        app: moonraker
+        release: moonraker
+    spec:
+      automountServiceAccountToken: false
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      nodeName: chef
+      containers:
+        # --- General ---
+      - image: mkuf/moonraker:latest
+        imagePullPolicy: Always
+        name: moonraker
+        # ---------------
+
+        # --- Network ---
+        ports:
+        - containerPort: 7125
+          name: http
+          protocol: TCP
+        # ---------------
+
+        # --- Probes ---
+        readinessProbe:
+          failureThreshold: 6
+          successThreshold: 1
+          initialDelaySeconds: 0
+          timeoutSeconds: 1
+          periodSeconds: 5
+          httpGet:
+            scheme: HTTP
+            port: 7125
+            path: /
+        livenessProbe:
+          failureThreshold: 6
+          successThreshold: 1
+          initialDelaySeconds: 0
+          timeoutSeconds: 1
+          periodSeconds: 5
+          tcpSocket:
+            port: 7125
+        # ---------------
+
+        # --- Mounts ---
+        volumeMounts:
+        - name: gcode
+          mountPath: /opt/printer_data/gcodes
+        - name: sock
+          mountPath: /opt/printer_data/run
+        - name: config
+          mountPath: /opt/printer_data/config
+        # ---------------
+        
+      volumes:
+      - name: gcode
+        persistentVolumeClaim:
+          claimName: gcode
+      - name: sock
+        hostPath:
+          path: /opt/printer_data/run
+      - name: config
+        persistentVolumeClaim:
+          claimName: klipper

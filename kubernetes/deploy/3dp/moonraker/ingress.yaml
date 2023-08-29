@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: traefik-internal
+  name: moonraker
+spec:
+  rules:
+  - host: moonraker.vandeneede.org
+    http:
+      paths:
+      - backend:
+          service:
+            name: moonraker
+            port:
+              name: http
+        path: /
+        pathType: ImplementationSpecific

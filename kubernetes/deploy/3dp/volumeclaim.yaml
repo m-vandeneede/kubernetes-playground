@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: klipper
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 2Gi
+  storageClassName: clusterstorage
+  volumeMode: Filesystem
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: gcode
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: clusterstorage
+  volumeMode: Filesystem
