@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: homarr
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: homarr
+      release: homarr
+  template:
+    metadata:
+      labels:
+        app: homarr
+        release: homarr
+    spec:
+      automountServiceAccountToken: false
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      containers:
+        # --- General ---
+      - image: ghcr.io/ajnart/homarr:latest
+        imagePullPolicy: Always
+        name: homarr
+        # ---------------
+      
+        # --- Network ---
+        ports:
+        - containerPort: 7575
+          name: http
+          protocol: TCP
+        # ---------------
+
+        # --- Probes ---
+        readinessProbe:
+          failureThreshold: 6
+          successThreshold: 1
+          initialDelaySeconds: 0
+          timeoutSeconds: 1
+          periodSeconds: 5
+          httpGet:
+            scheme: HTTP
+            port: 7575
+            path: /
+        livenessProbe:
+          failureThreshold: 6
+          successThreshold: 1
+          initialDelaySeconds: 0
+          timeoutSeconds: 1
+          periodSeconds: 5
+          tcpSocket:
+            port: 7575
+        # ---------------
+
+        # --- Mounts ---
+        volumeMounts:
+        - mountPath: /app/data/configs
+          name: config
+        - mountPath: /app/public/icons
+          name: icons
+        # ---------------
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: homarr-config
+      - name: icons
+        persistentVolumeClaim:
+          claimName: homarr-icons

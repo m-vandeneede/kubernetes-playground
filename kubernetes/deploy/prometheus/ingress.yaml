@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: traefik-internal
+  name: prometheus
+spec:
+  rules:
+  - host: prometheus.vandeneede.org
+    http:
+      paths:
+      - backend:
+          service:
+            name: prometheus
+            port:
+              name: http
+        path: /
+        pathType: ImplementationSpecific

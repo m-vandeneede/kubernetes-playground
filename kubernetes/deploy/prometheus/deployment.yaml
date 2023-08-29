@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus
+spec:
+  selector:
+    matchLabels:
+      app: prometheus
+      release: prometheus
+  template:
+    metadata:
+      labels:
+        app: prometheus
+        release: prometheus
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - image: prom/prometheus:latest
+        imagePullPolicy: Always
+        name: prometheus
+        ports:
+        - containerPort: 9090
+          name: http
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /etc/prometheus
+          name: config
+
+        # --- Security ---
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+              - NET_RAW
+        # ---------------
+
+        # --- Probes ---
+        readinessProbe:
+          failureThreshold: 6
+          successThreshold: 1
+          initialDelaySeconds: 0
+          timeoutSeconds: 1
+          periodSeconds: 5
+          httpGet:
+            scheme: HTTP
+            port: 9090
+            path: /
+        livenessProbe:
+          failureThreshold: 6
+          successThreshold: 1
+          initialDelaySeconds: 0
+          timeoutSeconds: 1
+          periodSeconds: 5
+          tcpSocket:
+            port: 9090
+        # ---------------
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: prometheus
