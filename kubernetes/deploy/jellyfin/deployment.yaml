@@ -34,6 +34,8 @@ spec:
           name: shows
         - mountPath: /data/movies
           name: movies
+        - mountPath: /data/music
+          name: music
         - mountPath: /dev/dri/card1
           name: card
         - mountPath: /dev/dri/renderD128
@@ -53,6 +55,10 @@ spec:
         nfs:
           server: 192.168.100.40
           path: /volume1/Media/Movies
+      - name: music
+        nfs:
+          server: 192.168.100.40
+          path: /volume1/Media/Music
       
       # Ensure device has rwx perms for other users on host (chmod -R o+rwx /dev/drive/card1)
       - name: card
