@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: icbinv
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: icbinv
+      release: icbinv
+  template:
+    metadata:
+      labels:
+        app: icbinv
+        release: icbinv
+    spec:
+      automountServiceAccountToken: false
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      containers:
+        # --- General ---
+      - image: mupepperoni/icantbelieveitsnotvaletudo:2023.08.0
+        imagePullPolicy: Always
+        name: icbinv
+        # ---------------
+
+        # --- Mounts ---
+        volumeMounts:
+        - name: config
+          mountPath: /app/config.json
+          subPath: config.json
+        # ---------------
+        
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: config
