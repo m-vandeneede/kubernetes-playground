@@ -1,0 +1,10 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: sonarr
+spec:
+  ports:
+  - protocol: TCP
+    port: 8989
+    name: http
+    targetPort: 8989

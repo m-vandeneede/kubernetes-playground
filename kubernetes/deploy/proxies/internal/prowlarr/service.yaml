@@ -1,0 +1,10 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: prowlarr
+spec:
+  ports:
+  - protocol: TCP
+    port: 9696
+    name: http
+    targetPort: 9696
