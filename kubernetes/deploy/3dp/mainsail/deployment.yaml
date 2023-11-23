@@ -26,10 +26,14 @@ spec:
         - mountPath: /usr/share/nginx/html/config.json
           subPath: config.json
           name: config
+        - mountPath: /dev/video0
+          name: cam0
+        - mountPath: /dev/video1
+          name: cam1
 
         # --- Security ---
         securityContext:
-          allowPrivilegeEscalation: false
+          privileged: true
           capabilities:
             drop:
               - NET_RAW
@@ -61,3 +65,9 @@ spec:
       - name: config
         persistentVolumeClaim:
           claimName: mainsail
+      - name: cam0
+        hostPath:
+          path: /dev/video0
+      - name: cam1
+        hostPath:
+          path: /dev/video1

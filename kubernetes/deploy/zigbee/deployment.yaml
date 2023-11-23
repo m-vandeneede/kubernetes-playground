@@ -42,7 +42,7 @@ spec:
           httpGet:
             scheme: HTTP
             port: 8080
-            path: /
+            path: /#/
         livenessProbe:
           failureThreshold: 6
           successThreshold: 1
