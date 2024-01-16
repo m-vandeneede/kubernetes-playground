@@ -12,4 +12,4 @@ spec:
     match: Host(`adguard.vandeneede.org`)
     services:
     - name: adguard
-      port: 80
+      port: 88
