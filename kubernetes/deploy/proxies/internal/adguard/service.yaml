@@ -1,0 +1,10 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: bazarr
+spec:
+  ports:
+  - protocol: TCP
+    port: 80
+    name: http
+    targetPort: 80
