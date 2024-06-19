@@ -16,3 +16,19 @@ spec:
               name: http
         path: /
         pathType: ImplementationSpecific
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRouteUDP
+metadata:
+  name: hass-colot-ingress
+  annotations: 
+    kubernetes.io/ingress.class: traefik-external
+spec:
+  entryPoints:
+    - colot
+  routes:
+  - services:
+    - name: home-assistant
+      port:
+        name: colot
+      weight: 10

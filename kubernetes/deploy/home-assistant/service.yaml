@@ -9,6 +9,10 @@ spec:
     port: 8123
     protocol: TCP
     targetPort: http
+  - name: colot
+    port: 5683
+    protocol: UDP
+    targetPort: colot
   selector:
     app: home-assistant
     release: home-assistant
