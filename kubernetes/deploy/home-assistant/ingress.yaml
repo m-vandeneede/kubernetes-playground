@@ -29,6 +29,5 @@ spec:
   routes:
   - services:
     - name: home-assistant
-      port:
-        name: colot
+      port: 5683
       weight: 10
