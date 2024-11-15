@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: immich
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: immich
+      release: immich
+  template:
+    metadata:
+      labels:
+        app: immich
+        release: immich
+    spec:
+      automountServiceAccountToken: false
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      containers:
+        # --- General ---
+      - image: ghcr.io/immich-app/immich-server:${IMMICH_VERSION:-release}
+        imagePullPolicy: Always
+        name: immich
+        # ---------------
+      
+        # --- Network ---
+        ports:
+        - containerPort: 2283
+          name: http
+          protocol: TCP
+        # ---------------
+
+        # --- Mounts ---
+        volumeMounts:
+        - mountPath: /etc/localtime
+          name: localtime
+          readOnly: true
+        - mountPath: /usr/src/app/upload
+          name: photos
+        # ---------------
+      volumes:
+      - name: photos
+        nfs:
+          server: 192.168.100.40
+          path: "/volume2/DCIM"
+      - name: localtime
+        hostPath:
+          path: /etc/localtime
