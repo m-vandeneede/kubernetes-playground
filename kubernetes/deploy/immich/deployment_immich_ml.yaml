@@ -1,29 +1,29 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: immich
+  name: immich-ml
 spec:
   progressDeadlineSeconds: 600
   replicas: 1
   revisionHistoryLimit: 3
   selector:
     matchLabels:
-      app: immich
-      release: immich
+      app: immich-ml
+      release: immich-ml
   template:
     metadata:
       labels:
-        app: immich
-        release: immich
+        app: immich-ml
+        release: immich-ml
     spec:
       automountServiceAccountToken: false
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       containers:
         # --- General ---
-      - image: ghcr.io/immich-app/immich-server:v1.121.0
+      - image: ghcr.io/immich-app/immich-machine-learning:v1.121.0
         imagePullPolicy: Always
-        name: immich
+        name: immich-ml
         env:
         - name: DB_HOSTNAME
           value: immich-db.immich.svc.cluster.local
@@ -44,29 +44,20 @@ spec:
         - name: IMMICH_MACHINE_LEARNING_URL
           value: http://immich-ml.immich.svc.cluster.local:3003
         - name: IMMICH_PORT
-          value: '2283'
+          value: '3003'
         # ---------------
-      
         # --- Network ---
         ports:
-        - containerPort: 2283
-          name: http
+        - containerPort: 3003
+          name: ml
           protocol: TCP
         # ---------------
-
         # --- Mounts ---
         volumeMounts:
-        - mountPath: /etc/localtime
-          name: localtime
-          readOnly: true
-        - mountPath: /usr/src/app/upload
-          name: photos
+        - mountPath: /cache
+          name: immich-ml-cache
         # ---------------
       volumes:
-      - name: photos
-        nfs:
-          server: 192.168.100.40
-          path: "/volume2/DCIM"
-      - name: localtime
-        hostPath:
-          path: /etc/localtime
+      - name: immich-ml-cache
+        persistentVolumeClaim:
+          claimName: immich-ml-cache-data

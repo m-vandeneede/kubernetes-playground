@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: homarr
+  name: immich
 spec:
   internalTrafficPolicy: Cluster
   ports:
@@ -12,4 +12,52 @@ spec:
   selector:
     app: immich
     release: immich
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: immich-db
+spec:
+  internalTrafficPolicy: Cluster
+  ports:
+  - name: pg
+    port: 5432
+    protocol: TCP
+    targetPort: pg
+  selector:
+    app: immich-db
+    release: immich-db
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: immich-ml
+spec:
+  internalTrafficPolicy: Cluster
+  ports:
+  - name: ml
+    port: 3003
+    protocol: TCP
+    targetPort: ml
+  selector:
+    app: immich-ml
+    release: immich-ml
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: immich-redis
+spec:
+  internalTrafficPolicy: Cluster
+  ports:
+  - name: redis
+    port: 6379
+    protocol: TCP
+    targetPort: redis
+  selector:
+    app: immich-redis
+    release: immich-redis
   type: ClusterIP
