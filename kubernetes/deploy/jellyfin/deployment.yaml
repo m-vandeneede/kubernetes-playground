@@ -22,7 +22,9 @@ spec:
         # Bit of a security concern since application is externally available
         securityContext:
           privileged: true
-
+        env:
+        - name: DOCKER_MODS
+          value: linuxserver/mods:jellyfin-opencl-intel
         ports:
         - containerPort: 8096
           name: http
