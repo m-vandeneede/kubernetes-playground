@@ -24,7 +24,7 @@ spec:
           privileged: true
         env:
         - name: DOCKER_MODS
-          value: linuxserver/mods:jellyfin-opencl-intel
+          value: linuxserver/mods:jellyfin-opencl-intel-24.35.30872.22
         ports:
         - containerPort: 8096
           name: http
