@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jellystat
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: jellystat
+      release: jellystat
+  template:
+    metadata:
+      labels:
+        app: jellystat
+        release: jellystat
+    spec:
+      automountServiceAccountToken: false
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      containers:
+        # --- General ---
+      - image: cyfershepard/jellystat:latest
+        imagePullPolicy: Always
+        name: jellystat
+        # ---------------
+      
+        # --- Environment ---
+        env:
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: jellystat-secrets
+              key: db-usr
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: jellystat-secrets
+              key: db-pwd
+        - name: POSTGRES_IP
+          value: jellystat-db.jellystat.svc.cluster.local
+        - name: POSTGRES_PORT
+          value: "5432"
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: jellystat-secrets
+              key: jwt-secret
+        # ---------------
+
+        # --- Network ---
+        ports:
+        - containerPort: 3000
+          name: http
+          protocol: TCP
+        # ---------------
+
+        # --- Probes ---
+        readinessProbe:
+          failureThreshold: 6
+          successThreshold: 1
+          initialDelaySeconds: 0
+          timeoutSeconds: 1
+          periodSeconds: 5
+          httpGet:
+            scheme: HTTP
+            port: 3000
+            path: /
+        livenessProbe:
+          failureThreshold: 6
+          successThreshold: 1
+          initialDelaySeconds: 0
+          timeoutSeconds: 1
+          periodSeconds: 5
+          tcpSocket:
+            port: 3000
+        # ---------------
+
+        # --- Mounts ---
+        volumeMounts:
+        - mountPath: /app/backend/backup-data
+          name: jellystat
+        # ---------------
+      volumes:
+      - name: jellystat
+        persistentVolumeClaim:
+          claimName: jellystat-backup
