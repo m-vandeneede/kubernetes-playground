@@ -21,7 +21,7 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
         # --- General ---
-      - image: ghcr.io/immich-app/immich-server:v1.125.6
+      - image: ghcr.io/immich-app/immich-server:v1.126.1
         imagePullPolicy: Always
         name: immich
         env:
