@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: traefik-internal
+  name: tdarr
+spec:
+  rules:
+  - host: tdarr.vandeneede.org
+    http:
+      paths:
+      - backend:
+          service:
+            name: tdarr
+            port:
+              name: http
+        path: /
+        pathType: ImplementationSpecific

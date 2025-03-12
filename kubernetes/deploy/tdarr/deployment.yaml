@@ -1,0 +1,103 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tdarr
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: tdarr
+      release: tdarr
+  template:
+    metadata:
+      labels:
+        app: tdarr
+        release: tdarr
+    spec:
+      automountServiceAccountToken: false
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      containers:
+        # --- General ---
+      - image: haveagitgat/tdarr:latest
+        imagePullPolicy: Always
+        name: tdarr
+        # ---------------
+      
+        # --- Environment ---
+        env:
+        - name: ServerIP
+          value: "0.0.0.0"
+        - name: ServerPort
+          value: "8266"
+        - name: webUIPort
+          value: "8265"
+        - name: internalNode
+          value: "true"
+        - name: inContainer
+          value: "true"
+        - name: ffmpegVersion
+          value: "6"
+        - name: nodeName
+          value: NoHWAccel
+        - name: TZ
+          value: Europe/Brussels
+        
+        # ---------------
+
+        # --- Network ---
+        ports:
+        - containerPort: 8265
+          name: http
+          protocol: TCP
+        # ---------------
+
+        # --- Probes ---
+        readinessProbe:
+          failureThreshold: 6
+          successThreshold: 1
+          initialDelaySeconds: 0
+          timeoutSeconds: 1
+          periodSeconds: 5
+          httpGet:
+            scheme: HTTP
+            port: 8265
+            path: /
+        livenessProbe:
+          failureThreshold: 6
+          successThreshold: 1
+          initialDelaySeconds: 0
+          timeoutSeconds: 1
+          periodSeconds: 5
+          tcpSocket:
+            port: 8265
+        # ---------------
+
+        # --- Mounts ---
+        volumeMounts:
+        - mountPath: /media/movies
+          name: movies
+        - mountPath: /media/shows
+          name: shows
+        - mountPath: /app/server
+          name: data
+        - mountPath: /app/configs
+          name: config
+        # ---------------
+      volumes:
+      - name: movies
+        nfs:
+          server: 192.168.100.40
+          path: "/volume1/Media/Movies"
+      - name: shows
+        nfs:
+          server: 192.168.100.40
+          path: "/volume1/Media/Shows"
+      - name: data
+        persistentVolumeClaim:
+          claimName: tdarr-data
+      - name: config
+        persistentVolumeClaim:
+          claimName: tdarr-config

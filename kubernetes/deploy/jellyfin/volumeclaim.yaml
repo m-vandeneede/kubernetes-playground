@@ -10,8 +10,3 @@ spec:
       storage: 25Gi
   storageClassName: clusterstorage-external
   volumeMode: Filesystem
-status:
-  accessModes:
-  - ReadWriteOnce
-  capacity:
-    storage: 25Gi

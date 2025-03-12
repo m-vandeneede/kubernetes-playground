@@ -32,6 +32,9 @@ spec:
         volumeMounts:
         - mountPath: /config
           name: config
+        - mountPath: /etc/s6-overlay/s6-rc.d/svc-jellyfin/run
+          subPath: run
+          name: jellyfin-svc
         - mountPath: /data/shows
           name: shows
         - mountPath: /data/movies
@@ -51,6 +54,9 @@ spec:
       - name: config
         persistentVolumeClaim:
           claimName: jellyfin
+      - name: jellyfin-svc
+        configMap:
+          name: jellyfin-svc-cm
       - name: shows
         nfs:
           server: 192.168.100.40
@@ -74,3 +80,29 @@ spec:
       - name: renderer
         hostPath:
           path: /dev/dri/renderD128
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: jellyfin-svc-cm
+data:
+  run: |
+    #!/usr/bin/with-contenv bash
+    # shellcheck shell=bash
+
+    if [[ -z "${FFMPEG_PATH}" ]] || [[ ! -f "${FFMPEG_PATH}" ]]; then
+        FFMPEG_PATH=/usr/lib/jellyfin-ffmpeg/ffmpeg
+    fi
+
+    export \
+        HOME="/config" \
+        JELLYFIN_DATA_DIR="/config/data" \
+        JELLYFIN_CONFIG_DIR="/config" \
+        JELLYFIN_LOG_DIR="/config/log" \
+        JELLYFIN_CACHE_DIR="/config/cache" \
+        JELLYFIN_WEB_DIR="/config/web"
+
+    exec \
+        s6-notifyoncheck -d -n 300 -w 1000 \
+            s6-setuidgid abc /usr/bin/jellyfin \
+            --ffmpeg="${FFMPEG_PATH}"
