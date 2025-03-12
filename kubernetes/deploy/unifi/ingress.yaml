@@ -1,18 +1,17 @@
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
 metadata:
-  annotations:
-    kubernetes.io/ingress.class: traefik-internal
   name: unifi
+  namespace: unifi
+  annotations: 
+    kubernetes.io/ingress.class: traefik-internal
 spec:
-  rules:
-  - host: unifi.vandeneede.org
-    http:
-      paths:
-      - backend:
-          service:
-            name: unifi-web
-            port:
-              name: http
-        path: /
-        pathType: ImplementationSpecific
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`unifi.vandeneede.org`)
+      services:
+        - name: unifi-web
+          port: https
+          scheme: https

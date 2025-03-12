@@ -59,7 +59,7 @@ metadata:
 spec:
   internalTrafficPolicy: Cluster
   ports:
-  - name: http
+  - name: https
     port: 8443
     protocol: TCP
   selector:

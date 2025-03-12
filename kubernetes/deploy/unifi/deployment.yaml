@@ -45,7 +45,7 @@ spec:
           name: discovery
           protocol: UDP
         - containerPort: 8443
-          name: http
+          name: https
           protocol: TCP
         - containerPort: 6789
           name: speedtest
