@@ -1,18 +1,23 @@
 image:
-  name: traefik
-  tag: ""
   pullPolicy: Always
 
 ingressRoute:
   dashboard:
-    enabled: false
+    enabled: true
+    matchRule: Host(`traefik.vandeneede.org`)
+    entryPoints: ["websecure"]
 
 globalArguments:
-  - "--global.checknewversion"
+  - "--global.checknewversion=false"
   - "--global.sendanonymoususage=false"
 additionalArguments:
   - "--serversTransport.insecureSkipVerify=true"
   - "--log.level=INFO"
+
+tlsStore:
+  default:
+    defaultCertificate:
+      secretName: vandeneede-org-production-tls
 
 deployment:
   enabled: true
@@ -21,21 +26,28 @@ deployment:
 ports:
   web:
     port: 8000
-    expose: true
+    expose:
+      default: true
     exposedPort: 80
-    redirectTo: 
-      port: websecure
+    redirections:
+      entryPoint:
+        to: websecure
+        scheme: https
+        permanent: true
     protocol: TCP
   websecure:
+    asDefault: true
     port: 8443
-    expose: true
+    expose:
+      default: true
     exposedPort: 443
     protocol: TCP
     tls:
       enabled: true
   mqtt:
     port: 1883
-    expose: true
+    expose:
+      default: true
     exposedPort: 1883
     protocol: TCP
 
