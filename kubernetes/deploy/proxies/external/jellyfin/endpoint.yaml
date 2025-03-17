@@ -1,0 +1,10 @@
+kind: Endpoints
+apiVersion: v1
+metadata:
+  name: jellyfin
+subsets:
+  - addresses:
+      - ip: 192.168.3.5
+    ports:
+      - port: 8096
+        name: http
