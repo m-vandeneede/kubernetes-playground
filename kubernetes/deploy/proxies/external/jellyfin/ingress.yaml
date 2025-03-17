@@ -12,4 +12,4 @@ spec:
     match: Host(`jellyfin.vandeneede.org`)
     services:
     - name: jellyfin
-      port: 8096
+      port: http
