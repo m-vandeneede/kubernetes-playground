@@ -11,5 +11,5 @@ spec:
   - kind: Rule
     match: Host(`portainer.vandeneede.org`)
     services:
-    - name: https
+    - name: portainer
       port: 9443
