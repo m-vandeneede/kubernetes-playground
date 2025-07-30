@@ -1,0 +1,10 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: portainer
+spec:
+  ports:
+  - protocol: TCP
+    port: 9443
+    name: https
+    targetPort: 9443
