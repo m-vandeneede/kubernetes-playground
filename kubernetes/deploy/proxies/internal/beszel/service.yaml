@@ -1,0 +1,10 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: beszel
+spec:
+  ports:
+  - protocol: TCP
+    port: 8090
+    name: https
+    targetPort: 8090
