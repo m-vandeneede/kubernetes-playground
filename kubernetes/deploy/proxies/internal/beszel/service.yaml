@@ -6,5 +6,5 @@ spec:
   ports:
   - protocol: TCP
     port: 8090
-    name: https
+    name: http
     targetPort: 8090
