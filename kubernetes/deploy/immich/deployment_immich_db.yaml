@@ -21,20 +21,9 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
         # --- General ---
-      - image: docker.io/tensorchord/pgvecto-rs:pg14-v0.2.0@sha256:90724186f0a3517cf6914295b5ab410db9ce23190a2d9d0b9dd6463e3fa298f0
+      - image: ghcr.io/immich-app/postgres:14-vectorchord0.4.3-pgvectors0.2.0
         imagePullPolicy: Always
         name: immich-db
-        args:
-          - -c
-          - shared_preload_libraries=vectors.so
-          - -c
-          - search_path="$$user", public, vectors
-          - -c
-          - max_wal_size=2GB
-          - -c
-          - shared_buffers=512MB
-          - -c
-          - wal_compression=on
         env:
         - name: POSTGRES_USER
           valueFrom:
@@ -53,23 +42,6 @@ spec:
 
         # ---------------
 
-        # ----Readiness----
-        readinessProbe:
-          exec:
-            command:
-            - /bin/bash
-            - -c
-            - |
-              pg_isready --dbname='${POSTGRES_DB}' --username='${POSTGRES_USER}' || exit 1
-              Chksum="$(psql --dbname=${POSTGRES_DB} --username=${POSTGRES_USER} --tuples-only --no-align --command='SELECT COALESCE(SUM(checksum_failures), 0) FROM pg_stat_database')"
-              echo "checksum failure count is $Chksum"
-              [ "$Chksum" = '0' ] || exit 1
-          initialDelaySeconds: 0
-          failureThreshold: 3
-          timeoutSeconds: 1
-          periodSeconds: 60
-        # -----------------
-
         # --- Network ---
         ports:
         - containerPort: 5432
@@ -81,8 +53,14 @@ spec:
         volumeMounts:
         - mountPath: /var/lib/postgresql/data
           name: immich-db-data
+        - name: dshm
+          mountPath: /dev/shm
         # ---------------
       volumes:
       - name: immich-db-data
         persistentVolumeClaim:
           claimName: immich-db-data
+      - name: dshm
+        emptyDir:
+          medium: Memory
+          sizeLimit: 128Mi
