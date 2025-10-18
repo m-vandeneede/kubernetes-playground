@@ -1,0 +1,84 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vikunja
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: vikunja
+      release: vikunja
+  template:
+    metadata:
+      labels:
+        app: vikunja
+        release: vikunja
+    spec:
+      automountServiceAccountToken: false
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      containers:
+        # --- General ---
+      - image: vikunja/vikunja:latest
+        imagePullPolicy: Always
+        name: vikunja
+        # ---------------
+      
+        # --- Network ---
+        ports:
+        - containerPort: 3456
+          name: http
+          protocol: TCP
+        # ---------------
+
+        # --- Env ---
+        env:
+        - name: VIKUNJA_SERVICE_PUBLICURL
+          value: https://tasks.vandeneede.org
+        - name: VIKUNJA_SERVICE_ENABLEREGISTRATION
+          value: "false"
+        - name: VIKUNJA_DATABASE_TYPE
+          value: postgres
+        - name: VIKUNJA_DATABASE_HOST
+          value: vault.storage.vandeneede.org:5234
+        - name: VIKUNJA_DATABASE_USER
+          value: vikunja
+        - name: VIKUNJA_DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: db-password
+              name: vikunja-secret
+        # ---------------
+
+        # --- Probes ---
+        readinessProbe:
+          failureThreshold: 6
+          successThreshold: 1
+          initialDelaySeconds: 0
+          timeoutSeconds: 1
+          periodSeconds: 5
+          httpGet:
+            scheme: HTTP
+            port: 3456
+            path: /
+        livenessProbe:
+          failureThreshold: 6
+          successThreshold: 1
+          initialDelaySeconds: 0
+          timeoutSeconds: 1
+          periodSeconds: 5
+          tcpSocket:
+            port: 3456
+        # ---------------
+
+        # --- Mounts ---
+        volumeMounts:
+        - mountPath: /files
+          name: files
+        # ---------------
+      volumes:
+      - name: files
+        persistentVolumeClaim:
+          claimName: vikunja-files

@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: traefik-external
+  name: vikunja-ingress
+spec:
+  rules:
+  - host: tasks.vandeneede.org
+    http:
+      paths:
+      - backend:
+          service:
+            name: vikunja-service
+            port:
+              name: http
+        path: /
+        pathType: ImplementationSpecific
