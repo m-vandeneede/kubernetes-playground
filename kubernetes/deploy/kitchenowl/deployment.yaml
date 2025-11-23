@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kitchenowl
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: kitchenowl
+      release: kitchenowl
+  template:
+    metadata:
+      labels:
+        app: kitchenowl
+        release: kitchenowl
+    spec:
+      automountServiceAccountToken: false
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      containers:
+        # --- General ---
+      - image: tombursch/kitchenowl:latest
+        imagePullPolicy: Always
+        name: kitchenowl
+        env:
+        - name: JWT_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: kitchenowl-secrets
+              key: jwt-secret
+
+        # ---------------
+
+        # --- Network ---
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        # ---------------
+
+        # --- Mounts ---
+        volumeMounts:
+        - mountPath: /data
+          name: kitchenowl-data
+        # ---------------
+      volumes:
+      - name: kitchenowl-data
+        persistentVolumeClaim:
+          claimName: kitchenowl-data
