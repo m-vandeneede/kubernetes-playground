@@ -6,6 +6,8 @@ ingressRoute:
     enabled: true
     matchRule: Host(`traefik.vandeneede.org`)
     entryPoints: ["websecure"]
+    middlewares:
+      - name: basic-auth
 
 global:
   checkNewVersion: false
