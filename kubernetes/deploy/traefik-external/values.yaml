@@ -31,6 +31,7 @@ ports:
       default: true
     exposedPort: 443
     protocol: TCP
+    asDefault: true
     tls:
       enabled: true
 

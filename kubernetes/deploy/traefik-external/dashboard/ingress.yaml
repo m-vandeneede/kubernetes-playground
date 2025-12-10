@@ -16,3 +16,5 @@ spec:
           port: 8080
       middlewares:
         - name: basic-auth
+  tls:
+    secretName: vandeneede-org-production-tls

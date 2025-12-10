@@ -7,9 +7,10 @@ ingressRoute:
     matchRule: Host(`traefik.vandeneede.org`)
     entryPoints: ["websecure"]
 
-globalArguments:
-  - "--global.checknewversion=false"
-  - "--global.sendanonymoususage=false"
+global:
+  checkNewVersion: false
+  sendAnonymousUsage: false
+
 additionalArguments:
   - "--serversTransport.insecureSkipVerify=true"
   - "--log.level=INFO"
