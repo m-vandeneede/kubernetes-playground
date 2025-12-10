@@ -1,18 +1,18 @@
 image:
-  name: traefik
-  tag: ""
   pullPolicy: Always
 
 ingressRoute:
   dashboard:
     enabled: false
 
-globalArguments:
-  - "--global.checknewversion"
-  - "--global.sendanonymoususage=false"
+global:
+  checkNewVersion: false
+  sendAnonymousUsage: false
+
 additionalArguments:
   - "--serversTransport.insecureSkipVerify=true"
   - "--log.level=INFO"
+  - "--api.insecure=true"
 
 deployment:
   enabled: true
@@ -21,33 +21,18 @@ deployment:
 ports:
   web:
     port: 8000
-    expose: true
+    expose:
+      default: true
     exposedPort: 80
-    #redirectTo: 
-    #  port: websecure
     protocol: TCP
   websecure:
     port: 8443
-    expose: true
+    expose:
+      default: true
     exposedPort: 443
     protocol: TCP
     tls:
       enabled: true
-  factoryquery:
-    port: 15777
-    expose: true
-    exposedPort: 15777
-    protocol: UDP
-  factorybeacon:
-    port: 15000
-    expose: true
-    exposedPort: 15000
-    protocol: UDP
-  factoryport:
-    port: 7777
-    expose: true
-    exposedPort: 7777
-    protocol: UDP
 
 providers:
   kubernetesCRD:

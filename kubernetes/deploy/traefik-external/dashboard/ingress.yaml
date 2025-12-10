@@ -1,0 +1,18 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-external-dashboard
+  namespace: traefik-external
+  annotations: 
+    kubernetes.io/ingress.class: traefik-internal
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`external.traefik.vandeneede.org`)
+      kind: Rule
+      services:
+        - name: traefik-external-dashboard
+          port: 8080
+      middlewares:
+        - name: basic-auth
