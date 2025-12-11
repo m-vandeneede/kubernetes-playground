@@ -21,7 +21,7 @@ kind: IngressRouteUDP
 metadata:
   name: hass-colot-ingress
   annotations: 
-    kubernetes.io/ingress.class: traefik-external
+    kubernetes.io/ingress.class: traefik-internal
 spec:
   entryPoints:
     - colot

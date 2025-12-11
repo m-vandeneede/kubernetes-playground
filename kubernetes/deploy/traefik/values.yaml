@@ -53,6 +53,12 @@ ports:
       default: true
     exposedPort: 1883
     protocol: TCP
+  colot:
+    port: 5683
+    expose:
+      default: true
+    exposedPort: 5683
+    protocol: UDP
 
 providers:
   kubernetesCRD:
