@@ -9,7 +9,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`external.traefik.vandeneede.org`)
+    - match: Host(`traefik_ext.vandeneede.org`)
       kind: Rule
       services:
         - name: traefik-external-dashboard
