@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postfix
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: postfix
+      release: postfix
+  template:
+    metadata:
+      labels:
+        app: postfix
+        release: postfix
+    spec:
+      automountServiceAccountToken: false
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      containers:
+        # --- General ---
+      - image: juanluisbaptiste/postfix:1.8.1
+        imagePullPolicy: Always
+        name: postfix
+        # ---------------
+      
+        # --- Environment ---
+        env:
+        - name: SMTP_SERVER
+          value: "protonmail-bridge.protonmail.svc.cluster.local"
+        - name: SMTP_PORT
+          value: "25"
+        - name: SERVER_HOSTNAME
+          value: "mail.vandeneede.org"
+        - name: ALWAYS_ADD_MISSING_HEADERS 
+          value: "yes"
+        - name: LOG_SUBJECT 
+          value: "yes"
+        - name: SMTP_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: postfix-secrets
+              key: smtp-username
+        - name: SMTP_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postfix-secrets
+              key: smtp-password
+        
+        # ---------------
+
+        # --- Network ---
+        ports:
+        - containerPort: 25
+          name: smtp
+          protocol: TCP
+        - containerPort: 465
+          name: smtps
+          protocol: TCP
+        - containerPort: 587
+          name: submission
+          protocol: TCP
+        # ---------------
+
+        # --- Probes ---
+        startupProbe:
+          failureThreshold: 6
+          successThreshold: 1
+          initialDelaySeconds: 0
+          timeoutSeconds: 1
+          periodSeconds: 5
+          tcpSocket:
+            port: 25
+        # ---------------

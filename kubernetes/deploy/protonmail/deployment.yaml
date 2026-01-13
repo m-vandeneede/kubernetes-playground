@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: protonmail-bridge
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: protonmail-bridge
+      release: protonmail-bridge
+  template:
+    metadata:
+      labels:
+        app: protonmail-bridge
+        release: protonmail-bridge
+    spec:
+      automountServiceAccountToken: false
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      containers:
+        # --- General ---
+      - image: ghcr.io/videocurio/proton-mail-bridge-alpine:latest
+        imagePullPolicy: Always
+        name: protonmail-bridge
+        # ---------------
+
+        # --- Network ---
+        ports:
+        - containerPort: 25
+          name: smtp
+          protocol: TCP
+        # ---------------
+
+        # --- Probes ---
+        startupProbe:
+          failureThreshold: 6
+          successThreshold: 1
+          initialDelaySeconds: 0
+          timeoutSeconds: 1
+          periodSeconds: 5
+          tcpSocket:
+            port: 25
+        # ---------------
+        # --- Mounts ---
+        volumeMounts:
+        - mountPath: /root
+          name: protonmail-bridge-data
+        # ---------------
+      volumes:
+      - name: protonmail-bridge-data
+        persistentVolumeClaim:
+          claimName: protonmail-bridge-data
