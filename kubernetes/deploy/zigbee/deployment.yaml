@@ -53,6 +53,12 @@ spec:
           value: "ISO_8601"
         - name: "ZIGBEE2MQTT_CONFIG_ADVANCED_TRANSMIT_POWER"
           value: "20"
+        - name: "ZIGBEE2MQTT_CONFIG_ADVANCED_CHANNEL"
+          value: "20"
+        - name: "ZIGBEE2MQTT_CONFIG_HOMEASSISTANT_ENABLED"
+          value: "true"
+        - name: "ZIGBEE2MQTT_CONFIG_HOMEASSISTANT_STATUS_TOPIC"
+          value: "homeassistant/status"
         ports:
         - containerPort: 8080
           name: http
@@ -60,7 +66,7 @@ spec:
         volumeMounts:
         - mountPath: /app/data
           name: config
-        - mountPath: /dev/ttyUSB0
+        - mountPath: /dev/serial/by-id/usb-ITead_Sonoff_Zigbee_3.0_USB_Dongle_Plus_fa3c3d9a9829ec1194ba6d7840c9ce8d-if00-port0
           name: dongle
         securityContext:
           privileged: true
@@ -93,4 +99,5 @@ spec:
           claimName: zigbee2mqtt
       - name: dongle
         hostPath:
-          path: /dev/ttyUSB0
+          path: /dev/serial/by-id/usb-ITead_Sonoff_Zigbee_3.0_USB_Dongle_Plus_fa3c3d9a9829ec1194ba6d7840c9ce8d-if00-port0
+          #path: /dev/ttyUSB0
