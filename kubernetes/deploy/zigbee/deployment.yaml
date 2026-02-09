@@ -37,6 +37,8 @@ spec:
               key: mqtt-password
         - name: "ZIGBEE2MQTT_CONFIG_MQTT_KEEPALIVE"
           value: "60"
+        - name: "ZIGBEE2MQTT_CONFIG_MQTT_REJECT_UNAUTHORIZED"
+          value: "false"
         - name: "ZIGBEE2MQTT_CONFIG_FRONTEND_ENABLED"
           value: "true"
         - name: "ZIGBEE2MQTT_CONFIG_FRONTEND_PORT"
@@ -49,6 +51,8 @@ spec:
           value: "true" 
         - name: "ZIGBEE2MQTT_CONFIG_ADVANCED_LAST_SEEN"
           value: "ISO_8601"
+        - name: "ZIGBEE2MQTT_CONFIG_ADVANCED_TRANSMIT_POWER"
+          value: "20"
         ports:
         - containerPort: 8080
           name: http
