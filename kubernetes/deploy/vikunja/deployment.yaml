@@ -21,7 +21,7 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
         # --- General ---
-      - image: vikunja/vikunja:latest
+      - image: vikunja/vikunja:1
         imagePullPolicy: Always
         name: vikunja
         # ---------------
@@ -75,9 +75,9 @@ spec:
 
         # --- Mounts ---
         volumeMounts:
-        - mountPath: /files
+        - mountPath: /app/vikunja/files
           name: files
-        # ---------------
+        #  ---------------
       volumes:
       - name: files
         persistentVolumeClaim:
