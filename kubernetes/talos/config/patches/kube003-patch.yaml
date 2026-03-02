@@ -1,0 +1,11 @@
+machine:
+  network:
+    interfaces:
+      - interface: eth0
+        dhcp: true
+  install:
+    disk: /dev/sda
+---
+apiVersion: v1alpha1
+kind: HostnameConfig
+hostname: kube003.vandeneede.org

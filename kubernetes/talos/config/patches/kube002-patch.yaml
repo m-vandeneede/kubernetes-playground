@@ -1,0 +1,12 @@
+machine:
+  network:
+    interfaces:
+      - interface: eth0
+        dhcp: true
+  install:
+    disk: /dev/sda
+    image: factory.talos.dev/nocloud-installer/3abf06e1d81e509d779dc256f9feae6cd6d82c69337c661cbfc383a92594faf5:v1.12.4
+---
+apiVersion: v1alpha1
+kind: HostnameConfig
+hostname: kube002.vandeneede.org

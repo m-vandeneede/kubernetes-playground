@@ -1,0 +1,12 @@
+machine:
+  network:
+    interfaces:
+      - interface: end0
+        dhcp: true
+  install:
+    disk: /dev/sda
+    image: factory.talos.dev/metal-installer/cc30f2743c6787dce64130ff08f73ed4b23382389a57cbb92196c666df493598:v1.12.4
+---
+apiVersion: v1alpha1
+kind: HostnameConfig
+hostname: kube001.vandeneede.org
