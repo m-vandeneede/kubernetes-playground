@@ -1,6 +1,6 @@
-resource "proxmox_vm_qemu" "controlplane" {
+resource "proxmox_vm_qemu" "cluster_vm" {
   for_each = {
-    for k, v in local.controlplane_vms : k => v
+    for k, v in local.cluster_vms : k => v
     if try(v.proxmox, false)
   }
   name        = each.key
@@ -12,7 +12,7 @@ resource "proxmox_vm_qemu" "controlplane" {
   memory      = each.value.memory
   balloon     = 0 # Unsupported by Talos
   scsihw      = "virtio-scsi-pci"
-  tags        = "talos,controlplane,kubernetes"
+  tags        = "kubernetes,talos,${(each.value.controlplane ? "controlplane" : "worker")}"
   machine     = "q35"
 
   cpu {

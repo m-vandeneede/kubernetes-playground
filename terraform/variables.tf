@@ -13,6 +13,19 @@ variable "proxmox_api_url" {
     type        = string
     default     = "https://node.southpark.vandeneede.org:8006/api2/json"
 }
+variable "routeros_user" {
+	description = "RouterOS username"
+	type        = string
+}
+variable "routeros_pass" {
+	description = "RouterOS password"
+	type        = string
+	sensitive   = true
+}
+variable "routeros_url" {
+	description = "RouterOS URL"
+	type        = string
+}
 
 # Talos
 variable "talos_version" {

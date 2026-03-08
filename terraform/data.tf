@@ -1,7 +1,8 @@
-data "talos_machine_configuration" "controlplane" {
+data "talos_machine_configuration" "talos_conf" {
+  for_each = local.cluster_vms
   cluster_endpoint   = var.talos_cluster_endpoint
   cluster_name       = var.talos_cluster_name
-  machine_type       = "controlplane"
+  machine_type       = (each.value.controlplane ? "controlplane" : "worker")
   kubernetes_version = var.kubernetes_version
   talos_version      = var.talos_version
   machine_secrets = {
