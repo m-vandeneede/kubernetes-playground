@@ -1,3 +1,9 @@
+variable "vm_state"	{
+	description = "State of the VMs (stopped or running)"
+	type        = string
+	default     = "stopped"
+}
+
 # Proxmox
 variable "proxmox_token_id" {
 	description = "Proxmox API token ID"
@@ -13,6 +19,8 @@ variable "proxmox_api_url" {
     type        = string
     default     = "https://node.southpark.vandeneede.org:8006/api2/json"
 }
+
+# RouterOS
 variable "routeros_user" {
 	description = "RouterOS username"
 	type        = string
@@ -24,6 +32,21 @@ variable "routeros_pass" {
 }
 variable "routeros_url" {
 	description = "RouterOS URL"
+	type        = string
+}
+
+# AdGuard
+variable "adguard_user" {
+	description = "AdGuard username"
+	type        = string
+}
+variable "adguard_pass" {
+	description = "AdGuard password"
+	type        = string
+	sensitive   = true
+}
+variable "adguard_url" {
+	description = "AdGuard URL"
 	type        = string
 }
 
@@ -108,6 +131,19 @@ variable "talos_etcd_cert" {
 }
 variable "talos_etcd_key" {
 	description = "Talos etcd key"
+	type        = string
+	sensitive   = true
+}
+variable "talos_client_ca" {
+	description = "Talos client CA certificate"
+	type        = string
+}
+variable "talos_client_cert" {
+	description = "Talos client certificate"
+	type        = string
+}
+variable "talos_client_key" {
+	description = "Talos client key"
 	type        = string
 	sensitive   = true
 }

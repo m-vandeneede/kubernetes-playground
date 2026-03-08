@@ -6,7 +6,7 @@ resource "proxmox_vm_qemu" "cluster_vm" {
   name        = each.key
   target_node = each.value.target_node.node_name
   bios        = "ovmf"
-  vm_state    = "stopped" # Enable this later
+  vm_state    = var.vm_state
   agent       = 1
   qemu_os     = "l26"
   memory      = each.value.memory
@@ -14,6 +14,7 @@ resource "proxmox_vm_qemu" "cluster_vm" {
   scsihw      = "virtio-scsi-pci"
   tags        = "kubernetes,talos,${(each.value.controlplane ? "controlplane" : "worker")}"
   machine     = "q35"
+  skip_ipv6   = true
 
   cpu {
     cores = each.value.cores

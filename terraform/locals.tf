@@ -17,6 +17,9 @@ locals {
       ip_address  = "10.70.0.101"
       controlplane = true
       proxmox     = false
+      disk_device = "/dev/sda"
+      network_interface = "end0"
+      talos_image = "factory.talos.dev/metal-installer/cc30f2743c6787dce64130ff08f73ed4b23382389a57cbb92196c666df493598:v1.12.4"
     }
     KUBE-002 = {
       hostname    = "kube002.vandeneede.org"
@@ -28,6 +31,9 @@ locals {
       cores       = 2
       disk_pool   = "fast"
       disk_size   = "10G"
+      disk_device = "/dev/sda"
+      network_interface = "eth0"
+      talos_image = "factory.talos.dev/nocloud-installer/3abf06e1d81e509d779dc256f9feae6cd6d82c69337c661cbfc383a92594faf5:v1.12.4"
     }
     KUBE-003 = {
       hostname    = "kube003.vandeneede.org"
@@ -39,6 +45,9 @@ locals {
       cores       = 2
       disk_pool   = "fast"
       disk_size   = "10G"
+      disk_device = "/dev/sda"
+      network_interface = "eth0"
+      talos_image = "factory.talos.dev/nocloud-installer/3abf06e1d81e509d779dc256f9feae6cd6d82c69337c661cbfc383a92594faf5:v1.12.4"
     }
     KUBE-101 = {
       hostname    = "kube101.vandeneede.org"
@@ -50,6 +59,9 @@ locals {
       cores       = 2
       disk_pool   = "fast"
       disk_size   = "10G"
+      disk_device = "/dev/sda"
+      network_interface = "eth0"
+      talos_image = "factory.talos.dev/nocloud-installer/3abf06e1d81e509d779dc256f9feae6cd6d82c69337c661cbfc383a92594faf5:v1.12.4"
     }
     KUBE-102 = {
       hostname    = "kube102.vandeneede.org"
@@ -61,6 +73,9 @@ locals {
       cores       = 2
       disk_pool   = "fast"
       disk_size   = "10G"
+      disk_device = "/dev/sda"
+      network_interface = "eth0"
+      talos_image = "factory.talos.dev/nocloud-installer/3abf06e1d81e509d779dc256f9feae6cd6d82c69337c661cbfc383a92594faf5:v1.12.4"
     }
   }
 }

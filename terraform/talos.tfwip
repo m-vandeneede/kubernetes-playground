@@ -1,5 +1,35 @@
 resource "talos_machine_configuration_apply" "talos" {
-    for_each = local.cluster_vms
-    machine_configuration_input = data.talos_machine_configuration.talos_conf[each.key].machine_configuration
-    node = each.value.hostname
+  for_each                       = local.cluster_vms
+  depends_on                     = [proxmox_vm_qemu.cluster_vm]
+  machine_configuration_input_wo = ephemeral.talos_machine_configuration.talos_conf[each.key].machine_configuration
+  client_configuration_wo        = ephemeral.talos_client_configuration.talos_client_conf.client_configuration
+  node                           = each.value.hostname
+
+  config_patches = [
+    yamlencode(
+      {
+        machine = {
+          install = {
+            disk  = each.value.disk_device
+            image = each.value.talos_image
+          }
+          network = {
+            interfaces = [
+              {
+                interface = each.value.network_interface
+                dhcp      = true
+              }
+            ]
+          }
+        }
+      }
+    ),
+    yamlencode(
+      {
+        apiVersion = "v1alpha1",
+        kind       = "HostnameConfig",
+        hostname   = each.value.hostname
+      }
+    )
+  ]
 }

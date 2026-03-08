@@ -1,5 +1,5 @@
-data "talos_machine_configuration" "talos_conf" {
-  for_each = local.cluster_vms
+ephemeral "talos_machine_configuration" "talos_conf" {
+  for_each           = local.cluster_vms
   cluster_endpoint   = var.talos_cluster_endpoint
   cluster_name       = var.talos_cluster_name
   machine_type       = (each.value.controlplane ? "controlplane" : "worker")
@@ -38,5 +38,15 @@ data "talos_machine_configuration" "talos_conf" {
     trustdinfo = {
       token = var.talos_trustd_token
     }
+  }
+}
+
+ephemeral "talos_client_configuration" "talos_client_conf" {
+  cluster_name = var.talos_cluster_name
+
+  client_configuration = {
+    ca_certificate     = var.talos_client_ca
+    client_certificate = var.talos_client_cert
+    client_key         = var.talos_client_key
   }
 }
