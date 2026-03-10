@@ -8,6 +8,6 @@ resource "adguard_rewrite" "cluster_mappings" {
     for k, v in local.cluster_vms : k => v
     if try(v.controlplane, true)
   }
-  domain     = local.cluster_hostname
+  domain     = "${local.cluster_hostname}.${local.cluster_domain}"
   answer     = each.value.ip_address
 }
