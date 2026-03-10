@@ -1,6 +1,7 @@
 locals {
   cluster_vlan = 70
   cluster_dhcp_server = "CLUSTER-DHCP"
+  cluster_hostname = "kubelab.vandeneede.org"
   proxmox_nodes = {
     CREDIGREE = {
       node_name        = "CREDIGREE"
@@ -19,7 +20,7 @@ locals {
       proxmox     = false
       disk_device = "/dev/sda"
       network_interface = "end0"
-      talos_image = "factory.talos.dev/metal-installer/cc30f2743c6787dce64130ff08f73ed4b23382389a57cbb92196c666df493598:v1.12.4"
+      talos_image = "factory.talos.dev/metal-installer/cc30f2743c6787dce64130ff08f73ed4b23382389a57cbb92196c666df493598:v${var.talos_version}"
     }
     KUBE-002 = {
       hostname    = "kube002.vandeneede.org"
@@ -33,7 +34,7 @@ locals {
       disk_size   = "10G"
       disk_device = "/dev/sda"
       network_interface = "eth0"
-      talos_image = "factory.talos.dev/nocloud-installer/3abf06e1d81e509d779dc256f9feae6cd6d82c69337c661cbfc383a92594faf5:v1.12.4"
+      talos_image = "factory.talos.dev/nocloud-installer/3abf06e1d81e509d779dc256f9feae6cd6d82c69337c661cbfc383a92594faf5:v${var.talos_version}"
     }
     KUBE-003 = {
       hostname    = "kube003.vandeneede.org"
@@ -47,7 +48,7 @@ locals {
       disk_size   = "10G"
       disk_device = "/dev/sda"
       network_interface = "eth0"
-      talos_image = "factory.talos.dev/nocloud-installer/3abf06e1d81e509d779dc256f9feae6cd6d82c69337c661cbfc383a92594faf5:v1.12.4"
+      talos_image = "factory.talos.dev/nocloud-installer/3abf06e1d81e509d779dc256f9feae6cd6d82c69337c661cbfc383a92594faf5:v${var.talos_version}"
     }
     KUBE-101 = {
       hostname    = "kube101.vandeneede.org"
@@ -61,7 +62,7 @@ locals {
       disk_size   = "10G"
       disk_device = "/dev/sda"
       network_interface = "eth0"
-      talos_image = "factory.talos.dev/nocloud-installer/3abf06e1d81e509d779dc256f9feae6cd6d82c69337c661cbfc383a92594faf5:v1.12.4"
+      talos_image = "factory.talos.dev/nocloud-installer/3abf06e1d81e509d779dc256f9feae6cd6d82c69337c661cbfc383a92594faf5:v${var.talos_version}"
     }
     KUBE-102 = {
       hostname    = "kube102.vandeneede.org"
@@ -75,7 +76,7 @@ locals {
       disk_size   = "10G"
       disk_device = "/dev/sda"
       network_interface = "eth0"
-      talos_image = "factory.talos.dev/nocloud-installer/3abf06e1d81e509d779dc256f9feae6cd6d82c69337c661cbfc383a92594faf5:v1.12.4"
+      talos_image = "factory.talos.dev/nocloud-installer/3abf06e1d81e509d779dc256f9feae6cd6d82c69337c661cbfc383a92594faf5:v${var.talos_version}"
     }
   }
 }
