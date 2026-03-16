@@ -9,6 +9,29 @@ resource "talos_machine_configuration_apply" "talos" {
     yamlencode(
       {
         machine = {
+          kubelet = {
+            extraMounts = [
+              {
+                destination = "/var/lib/longhorn"
+                type        = "bind"
+                source      = "/var/lib/longhorn"
+                options = [
+                  "bind",
+                  "rw",
+                  "rshared"
+                ]
+              }
+            ]
+          }
+          sysctls = {
+            "vm.nr_hugepages" = "1024"
+          }
+          kernel = {
+             modules = [
+              {name = "nvme_tcp"},
+              {name = "vfio_pci"}
+            ]
+          }
           install = {
             disk  = each.value.disk_device
             image = each.value.talos_image

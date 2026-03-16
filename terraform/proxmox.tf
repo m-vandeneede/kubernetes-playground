@@ -51,6 +51,20 @@ resource "proxmox_vm_qemu" "cluster_vm" {
           iso = each.value.target_node.iso_installation
         }
       }
+      dynamic "ide2" {
+        for_each = try(each.value.data_disk_size, null) != null ? [1] : []
+        content {
+          disk {
+            backup     = false
+            size       = each.value.data_disk_size
+            emulatessd = true
+            format     = "raw"
+            storage    = each.value.disk_pool
+            asyncio    = "io_uring"
+            discard    = true
+          }
+        }
+      }
     }
   }
 
