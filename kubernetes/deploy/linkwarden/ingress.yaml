@@ -6,7 +6,7 @@ metadata:
   name: jellystat
 spec:
   rules:
-  - host: linkwarden.vandeneede.org
+  - host: bookmarks.vandeneede.org
     http:
       paths:
       - backend:
