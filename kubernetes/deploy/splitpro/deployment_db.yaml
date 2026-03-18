@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: splitpro-postgres
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: splitpro-postgres
+      release: splitpro-postgres
+  template:
+    metadata:
+      labels:
+        app: splitpro-postgres
+        release: splitpro-postgres
+    spec:
+      automountServiceAccountToken: false
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      containers:
+        # --- General ---
+        - image: ossapps/postgres:17.7-trixie
+          imagePullPolicy: Always
+          name: splitpro-postgres
+          # ---------------
+
+          # --- Environment ---
+          env:
+            - name: POSTGRES_USER
+              value: splitpro
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: splitpro-secrets
+                  key: db-pwd
+            - name: POSTGRES_DB
+              value: splitpro_db
+            - name: POSTGRES_PORT
+              value: "5432"
+
+          # ---------------
+
+          # --- Network ---
+          ports:
+            - containerPort: 5432
+              name: postgres
+              protocol: TCP
+          # ---------------
+
+          #command: ["postgres", "-c", "shared_preload_libraries=pg_cron", "-c", "cron.database_name=splitpro_db", "-c", "cron.timezone=UTC"]
+          args: ["-c", "shared_preload_libraries=pg_cron", "-c", "cron.database_name=splitpro_db", "-c", "cron.timezone=UTC"]
+
+          # --- Mounts ---
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: splitpro-db
+          # ---------------
+      volumes:
+        - name: splitpro-db
+          persistentVolumeClaim:
+            claimName: splitpro-postgres-data

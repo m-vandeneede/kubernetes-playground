@@ -3,15 +3,15 @@ kind: Ingress
 metadata:
   annotations:
     kubernetes.io/ingress.class: traefik-external
-  name: linkwarden
+  name: splitpro
 spec:
   rules:
-  - host: bookmarks.vandeneede.org
+  - host: splitpro.vandeneede.org
     http:
       paths:
       - backend:
           service:
-            name: linkwarden
+            name: splitpro
             port:
               name: http
         path: /

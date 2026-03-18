@@ -1,0 +1,101 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: splitpro
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: splitpro
+      release: splitpro
+  template:
+    metadata:
+      labels:
+        app: splitpro
+        release: splitpro
+    spec:
+      automountServiceAccountToken: false
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      containers:
+        # --- General ---
+        - image: ossapps/splitpro:latest
+          imagePullPolicy: Always
+          name: splitpro
+          # ---------------
+
+          # --- Environment ---
+          env:
+            - name: POSTGRES_USER
+              value: splitpro
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: splitpro-secrets
+                  key: db-pwd
+            - name: POSTGRES_DB
+              value: splitpro_db
+            - name: POSTGRES_PORT
+              value: "5432"
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: splitpro-secrets
+                  key: db-url
+            - name: NEXTAUTH_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: splitpro-secrets
+                  key: nextauth-secret
+            - name: NEXTAUTH_URL
+              value: https://splitpro.vandeneede.org
+            - name: FROM_EMAIL
+              value: systems@vandeneede.org
+            - name: EMAIL_SERVER_HOST
+              value: postfix.postfix.svc.cluster.local
+            - name: EMAIL_SERVER_PORT
+              value: "25"
+            - name: DISABLE_EMAIL_SIGNUP
+              value: "true"
+
+          # ---------------
+
+          # --- Network ---
+          ports:
+            - containerPort: 3000
+              name: http
+              protocol: TCP
+          # ---------------
+
+          # --- Probes ---
+          readinessProbe:
+            failureThreshold: 6
+            successThreshold: 1
+            initialDelaySeconds: 0
+            timeoutSeconds: 1
+            periodSeconds: 5
+            httpGet:
+              scheme: HTTP
+              port: 3000
+              path: /
+          livenessProbe:
+            failureThreshold: 6
+            successThreshold: 1
+            initialDelaySeconds: 0
+            timeoutSeconds: 1
+            periodSeconds: 5
+            tcpSocket:
+              port: 3000
+          # ---------------
+
+          # --- Mounts ---
+          volumeMounts:
+            - mountPath: /app/uploads
+              name: splitpro
+          # ---------------
+      volumes:
+        - name: splitpro
+          persistentVolumeClaim:
+            claimName: splitpro-data
