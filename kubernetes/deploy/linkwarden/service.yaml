@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: linkwarden
+spec:
+  internalTrafficPolicy: Cluster
+  ports:
+  - name: http
+    port: 3000
+    protocol: TCP
+    targetPort: http
+  selector:
+    app: linkwarden
+    release: linkwarden
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: linkwarden-meili
+spec:
+  internalTrafficPolicy: Cluster
+  ports:
+  - name: http
+    port: 7700
+    protocol: TCP
+    targetPort: http
+  selector:
+    app: linkwarden-meili
+    release: linkwarden-meili
+  type: ClusterIP
