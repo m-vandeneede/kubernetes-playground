@@ -70,7 +70,8 @@ data "talos_image_factory_extensions_versions" "amd_extensions_info" {
       "siderolabs/amdgpu",
       "siderolabs/iscsi-tools",
       "siderolabs/nfs-utils",
-      "siderolabs/util-linux-tools"
+      "siderolabs/util-linux-tools",
+      "siderolabs/qemu-guest-agent"
     ]
   }
 }
@@ -83,7 +84,8 @@ data "talos_image_factory_extensions_versions" "intel_extensions_info" {
       "siderolabs/intel-ucode",
       "siderolabs/iscsi-tools",
       "siderolabs/nfs-utils",
-      "siderolabs/util-linux-tools"
+      "siderolabs/util-linux-tools",
+      "siderolabs/qemu-guest-agent"
     ]
   }
 }
