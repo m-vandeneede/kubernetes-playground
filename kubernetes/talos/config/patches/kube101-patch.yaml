@@ -8,6 +8,9 @@ machine:
           - rw
           - bind
           - rshared
+    nodeIP:
+      validSubnets:
+        - 10.70.0.0/24
   #sysctls:
   #  vm.nr_hugepages: 1024
   kernel:

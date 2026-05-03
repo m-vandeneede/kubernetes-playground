@@ -10,6 +10,10 @@ machine:
             dhcp: false
           - vlanId: 72 # VLAN for external ingress traffic
             dhcp: false
+  kubelet:
+    nodeIP:
+      validSubnets:
+        - 10.70.0.0/24
   install:
     disk: /dev/sda
     image: factory.talos.dev/nocloud-installer-secureboot/efe06b1b353c64e5582b00831867f8ec55580190d78f48b206c681b5c5a0b683:v1.13.0

@@ -1,0 +1,49 @@
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: ingress-advertisement
+  namespace: metallb-system
+spec:
+  ipAddressPools:
+    - ingress-pool
+  interfaces:
+    - eth0.71
+---
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: ingress-advertisement-kube001
+  namespace: metallb-system
+spec:
+  ipAddressPools:
+    - ingress-pool
+  nodeSelectors:
+    - matchLabels:
+        kubernetes.io/hostname: kube001
+  interfaces:
+    - end0.71
+---
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: dmz-advertisement
+  namespace: metallb-system
+spec:
+  ipAddressPools:
+    - dmz-pool
+  interfaces:
+    - eth0.72
+---
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: dmz-advertisement-kube001
+  namespace: metallb-system
+spec:
+  ipAddressPools:
+    - dmz-pool
+  nodeSelectors:
+    - matchLabels:
+        kubernetes.io/hostname: kube001
+  interfaces:
+    - end0.72
