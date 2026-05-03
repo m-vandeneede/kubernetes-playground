@@ -51,91 +51,93 @@ ephemeral "talos_client_configuration" "talos_client_conf" {
   }
 }
 
-data "talos_image_factory_extensions_versions" "rpi_extensions_info" {
-  talos_version = var.talos_version
-  filters = {
-    names = [
-      "siderolabs/iscsi-tools",
-      "siderolabs/nfs-utils",
-      "siderolabs/util-linux-tools"
-    ]
-  }
-}
+#data "talos_image_factory_extensions_versions" "rpi_extensions_info" {
+#  talos_version = var.talos_version
+#  filters = {
+#    names = [
+#      "siderolabs/iscsi-tools",
+#      "siderolabs/nfs-utils",
+#      "siderolabs/util-linux-tools"
+#    ]
+#  }
+#}
 
-data "talos_image_factory_extensions_versions" "amd_extensions_info" {
-  talos_version = var.talos_version
-  filters = {
-    names = [
-      "siderolabs/amd-ucode",
-      "siderolabs/amdgpu",
-      "siderolabs/iscsi-tools",
-      "siderolabs/nfs-utils",
-      "siderolabs/util-linux-tools",
-      "siderolabs/qemu-guest-agent"
-    ]
-  }
-}
+#data "talos_image_factory_extensions_versions" "amd_extensions_info" {
+#  talos_version = var.talos_version
+#  filters = {
+#    names = [
+#      "siderolabs/amd-ucode",
+#      "siderolabs/amdgpu",
+#      "siderolabs/iscsi-tools",
+#      "siderolabs/nfs-utils",
+#      "siderolabs/util-linux-tools",
+#      "siderolabs/qemu-guest-agent"
+#    ]
+#  }
+#}
 
-data "talos_image_factory_extensions_versions" "intel_extensions_info" {
-  talos_version = var.talos_version
-  filters = {
-    names = [
-      "siderolabs/i915",
-      "siderolabs/intel-ucode",
-      "siderolabs/iscsi-tools",
-      "siderolabs/nfs-utils",
-      "siderolabs/util-linux-tools",
-      "siderolabs/qemu-guest-agent"
-    ]
-  }
-}
+#zdata "talos_image_factory_extensions_versions" "intel_extensions_info" {
+#  talos_version = var.talos_version
+#  filters = {
+#    names = [
+#      "siderolabs/i915",
+#      "siderolabs/intel-ucode",
+#      "siderolabs/iscsi-tools",
+#      "siderolabs/nfs-utils",
+#      "siderolabs/util-linux-tools",
+#      "siderolabs/qemu-guest-agent"
+#    ]
+#  }
+#}
 
-resource "talos_image_factory_schematic" "talos_rpi" {
-  schematic = yamlencode(
-    {
-      overlay = {
-        image = "siderolabs/sbc-raspberrypi"
-        name  = "rpi_generic"
-        options = {
-          overlay = {
-            options = {
-              configTxt = <<-EOT
-                dtoverlay=gpio-fan,gpiopin=14
-                gpu_mem=8
-              EOT
-            }
-          }
-        }
-      }
-      customization = {
-        systemExtensions = {
-          officialExtensions = data.talos_image_factory_extensions_versions.rpi_extensions_info.extensions_info.*.name
-        }
-      }
-    }
-  )
-}
+#resource "talos_image_factory_schematic" "talos_rpi" {
+#  schematic = yamlencode(
+#    {
+#      overlay = {
+#        image = "siderolabs/sbc-raspberrypi"
+#        name  = "rpi_generic"
+#        options = {
+#          overlay = {
+#            options = {
+#              configTxt = <<-EOT
+#                dtoverlay=gpio-fan,gpiopin=14
+#                gpu_mem=8
+#              EOT
+#            }
+#          }
+#        }
+#      }
+#      customization = {
+#        systemExtensions = {
+#          officialExtensions = data.talos_image_factory_extensions_versions.rpi_extensions_info.extensions_info.*.name
+#        }
+#      }
+#    }
+#  )
+#}
 
-resource "talos_image_factory_schematic" "talos_amd" {
-  schematic = yamlencode(
-    {
-      customization = {
-        systemExtensions = {
-          officialExtensions = data.talos_image_factory_extensions_versions.amd_extensions_info.extensions_info.*.name
-        }
-      }
-    }
-  )
-}
+#resource "talos_image_factory_schematic" "talos_amd" {
+#  schematic = yamlencode(
+#    {
+#      customization = {
+#        systemExtensions = {
+#          officialExtensions = data.talos_image_factory_extensions_versions.amd_extensions_info.extensions_info.*.name
+#        },
+#        bootloader= "sd-boot"
+#      }
+#    }
+#  )
+#}
 
-resource "talos_image_factory_schematic" "talos_intel" {
-  schematic = yamlencode(
-    {
-      customization = {
-        systemExtensions = {
-          officialExtensions = data.talos_image_factory_extensions_versions.intel_extensions_info.extensions_info.*.name
-        }
-      }
-    }
-  )
-}
+#resource "talos_image_factory_schematic" "talos_intel" {
+#  schematic = yamlencode(
+#    {
+#      customization = {
+#        systemExtensions = {
+#          officialExtensions = data.talos_image_factory_extensions_versions.intel_extensions_info.extensions_info.*.name
+#        },
+#        bootloader= "sd-boot"
+#      }
+#    }
+#  )
+#}

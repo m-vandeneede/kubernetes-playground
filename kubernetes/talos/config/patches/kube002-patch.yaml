@@ -2,10 +2,17 @@ machine:
   network:
     interfaces:
       - interface: eth0
-        dhcp: true
+        dhcp: false
+        vlans:
+          - vlanId: 70 # VLAN for cluster traffic
+            dhcp: true
+          - vlanId: 71 # VLAN for local ingress traffic
+            dhcp: false
+          - vlanId: 72 # VLAN for external ingress traffic
+            dhcp: false
   install:
     disk: /dev/sda
-    image: factory.talos.dev/nocloud-installer/3abf06e1d81e509d779dc256f9feae6cd6d82c69337c661cbfc383a92594faf5:v1.12.4
+    image: factory.talos.dev/nocloud-installer-secureboot/ef4cc080b257a0f42c868da1c889990319f5244024c6e710a7211779ef5989ba:v1.13.0
 ---
 apiVersion: v1alpha1
 kind: HostnameConfig

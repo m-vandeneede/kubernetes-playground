@@ -24,7 +24,7 @@ resource "proxmox_vm_qemu" "cluster_vm" {
   network {
     id       = 0
     model    = "virtio"
-    tag      = local.cluster_vlan
+    #tag      = local.cluster_vlan
     bridge   = "vmbr0"
     firewall = false
   }

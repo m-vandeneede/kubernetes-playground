@@ -4,3 +4,5 @@
 /terraform/terraform.tfstate
 /terraform/terraform.tfvars
 /terraform/.terraform
+/kubernetes/talos/config/.merged
+/kubernetes/talos/config/.base

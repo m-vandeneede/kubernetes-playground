@@ -2,10 +2,21 @@ machine:
   network:
     interfaces:
       - interface: end0
-        dhcp: true
+        dhcp: false
+        vlans:
+          - vlanId: 70 # VLAN for cluster traffic
+            dhcp: true
+          - vlanId: 71 # VLAN for local ingress traffic
+            dhcp: false
+          - vlanId: 72 # VLAN for external ingress traffic
+            dhcp: false
+  kubelet:
+    nodeIP:
+      validSubnets:
+        - 10.70.0.0/24
   install:
     disk: /dev/sda
-    image: factory.talos.dev/metal-installer/cc30f2743c6787dce64130ff08f73ed4b23382389a57cbb92196c666df493598:v1.12.4
+    image: factory.talos.dev/metal-installer/6deb61c88f80e8c9393a672ae93ee5d67364db0f120b8bd21de1e5025a921653:v1.13.0
 ---
 apiVersion: v1alpha1
 kind: HostnameConfig

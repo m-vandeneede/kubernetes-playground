@@ -1,0 +1,44 @@
+machine:
+  kubelet:
+    extraMounts:
+      - destination: /var/mnt/longhorn
+        source: /var/mnt/longhorn
+        type: bind
+        options:
+          - rw
+          - bind
+          - rshared
+  #sysctls:
+  #  vm.nr_hugepages: 1024
+  kernel:
+    modules:
+      - name: nvme_tcp
+      - name: vfio_pci
+  network:
+    interfaces:
+      - interface: eth0
+        dhcp: false
+        vlans:
+          - vlanId: 70 # VLAN for cluster traffic
+            dhcp: true
+          - vlanId: 71 # VLAN for local ingress traffic
+            dhcp: false
+          - vlanId: 72 # VLAN for external ingress traffic
+            dhcp: false
+  install:
+    disk: /dev/sda
+    image: factory.talos.dev/nocloud-installer-secureboot/ef4cc080b257a0f42c868da1c889990319f5244024c6e710a7211779ef5989ba:v1.13.0
+---
+apiVersion: v1alpha1
+kind: HostnameConfig
+auto: off
+hostname: kube101.vandeneede.org
+---
+apiVersion: v1alpha1
+kind: UserVolumeConfig
+name: longhorn # name is used to identify the volume /var/mnt/<name>
+provisioning:
+  diskSelector:
+    match: disk.dev_path == "/dev/sdb"
+  grow: false
+  maxSize: 100GB

@@ -54,12 +54,12 @@ variable "adguard_url" {
 variable "talos_version" {
 	description = "Talos version to use for the cluster"
 	type        = string
-	default     = "1.12.4"
+	default     = "1.12.6"
 }
 variable "kubernetes_version" {
 	description = "Kubernetes version to use for the cluster"
 	type        = string
-	default     = "1.35.0"
+	default     = "1.35.3"
 }
 variable "talos_cluster_endpoint" {
 	description = "Talos cluster endpoint"
