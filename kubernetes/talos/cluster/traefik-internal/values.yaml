@@ -17,10 +17,10 @@ additionalArguments:
   - "--serversTransport.insecureSkipVerify=true"
   - "--log.level=INFO"
 
-#tlsStore:
-#  default:
-#    defaultCertificate:
-#      secretName: vandeneede-org-production-tls
+tlsStore:
+  default:
+    defaultCertificate:
+      secretName: vandeneede-org-production-tls
 
 deployment:
   enabled: true
