@@ -2,7 +2,7 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: vandeneede-staging-cert
-  namespace: default
+  namespace: cert-manager
 spec:
   secretName: vandeneede-org-staging-tls
   issuerRef:
