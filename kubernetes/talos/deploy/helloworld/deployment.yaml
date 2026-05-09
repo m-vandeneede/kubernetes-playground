@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: helloworld-deployment
+spec:
+  selector:
+    matchLabels:
+      app: helloworld
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: helloworld
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: nginx
+          image: nginx:alpine
+          securityContext:
+            #allowPrivilegeEscalation: false
+            #capabilities:
+            #  drop:
+            #    - ALL
+            #runAsNonRoot: true
+            #runAsUser: 101
+            seccompProfile:
+              type: RuntimeDefault
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name:  nginx-data
+              mountPath: /usr/share/nginx/html # mount inside of contianer
+      volumes:
+        - name: nginx-data
+          persistentVolumeClaim:
+            claimName: nginx

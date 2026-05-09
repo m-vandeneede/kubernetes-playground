@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: traefik-external-dashboard-ingress
+spec:
+  ingressClassName: internal
+  rules:
+  - host: traefikext.vandeneede.org
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: traefik-external-dashboard
+            port:
+              number: 8080

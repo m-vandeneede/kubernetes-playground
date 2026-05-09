@@ -1,0 +1,85 @@
+image:
+  pullPolicy: Always
+
+ingressRoute:
+  dashboard:
+    enabled: true
+    matchRule: Host(`traefik.vandeneede.org`)
+    entryPoints: ["websecure"]
+    middlewares:
+      - name: basic-auth
+
+global:
+  checkNewVersion: false
+  sendAnonymousUsage: false
+
+additionalArguments:
+  - "--serversTransport.insecureSkipVerify=true"
+  - "--log.level=INFO"
+
+#tlsStore:
+#  default:
+#    defaultCertificate:
+#      secretName: vandeneede-org-production-tls
+
+deployment:
+  enabled: true
+  replicas: 2
+
+ports:
+  web:
+    port: 8000
+    protocol: TCP
+    expose:
+      default: true
+    exposedPort: 80
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+          permanent: true
+  websecure:
+    asDefault: true
+    port: 8443
+    expose:
+      default: true
+    exposedPort: 443
+    protocol: TCP
+    http:
+      tls:
+        enabled: true
+  mqtt:
+    port: 1883
+    expose:
+      default: true
+    exposedPort: 1883
+    protocol: TCP
+  colot:
+    port: 5683
+    expose:
+      default: true
+    exposedPort: 5683
+    protocol: UDP
+
+providers:
+  kubernetesCRD:
+    enabled: true
+    ingressClass: internal
+  kubernetesIngress:
+    enabled: true
+    ingressClass: internal
+    publishedService:
+      enabled: true
+
+ingressClass:  # @schema additionalProperties: false
+  # -- Create a default IngressClass for Traefik
+  enabled: true
+  isDefaultClass: true
+  name: internal
+
+service:
+  enabled: true
+  type: LoadBalancer
+  annotations:
+    metallb.io/loadBalancerIPs: 10.71.0.10
