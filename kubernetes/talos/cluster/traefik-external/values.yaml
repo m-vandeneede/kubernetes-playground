@@ -10,11 +10,6 @@ additionalArguments:
   - "--log.level=INFO"
   - "--api.insecure=true"
 
-tlsStore:
-  default:
-    defaultCertificate:
-      secretName: vandeneede-org-production-tls
-
 deployment:
   enabled: true
   replicas: 2
