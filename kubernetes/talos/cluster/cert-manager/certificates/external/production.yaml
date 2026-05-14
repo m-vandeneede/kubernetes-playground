@@ -4,7 +4,7 @@ metadata:
   name: vandeneede-production-cert
   namespace: traefik-external
 spec:
-  secretName: vandeneede-org-production-tls
+  secretName: vandeneede-org-production-tls-external
   issuerRef:
     name: letsencrypt-production
     kind: ClusterIssuer
