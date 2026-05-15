@@ -20,6 +20,15 @@ spec:
       automountServiceAccountToken: false
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
+
+      # --- Security ---
+      securityContext:
+        runAsUser: 65534
+        runAsGroup: 65534
+        fsGroup: 65534
+        fsGroupChangePolicy: OnRootMismatch
+      # ---------------
+      
       containers:
         # --- General ---
       - image: prom/prometheus:v3
