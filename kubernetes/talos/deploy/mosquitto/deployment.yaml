@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: mosquitto
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: mosquitto
@@ -23,6 +24,17 @@ spec:
         - name: mosquitto
           image: eclipse-mosquitto:2
           imagePullPolicy: Always
+          securityContext:
+            runAsUser: 65534
+            runAsGroup: 65534
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+
           ports:
             - name: mqtt
               containerPort: 1883
