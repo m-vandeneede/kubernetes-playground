@@ -15,6 +15,13 @@ spec:
         release: zigbee2mqtt
     spec:
       automountServiceAccountToken: false
+      
+      strategy:
+        type: RollingUpdate
+        rollingUpdate:
+          maxSurge: 1
+          maxUnavailable: 0
+
       containers:
       - image: koenkk/zigbee2mqtt:latest
         imagePullPolicy: Always
