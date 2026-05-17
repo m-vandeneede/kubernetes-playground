@@ -3,7 +3,7 @@ kind: Ingress
 metadata:
   name: helloworld-ingress
 spec:
-  ingressClassName: internal
+  ingressClassName: external
   rules:
   - host: hello.vandeneede.org
     http:

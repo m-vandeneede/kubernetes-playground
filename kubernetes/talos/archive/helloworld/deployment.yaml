@@ -27,10 +27,10 @@ spec:
               type: RuntimeDefault
           ports:
             - containerPort: 80
-          volumeMounts:
-            - name:  nginx-data
-              mountPath: /usr/share/nginx/html # mount inside of contianer
-      volumes:
-        - name: nginx-data
-          persistentVolumeClaim:
-            claimName: nginx
+          #volumeMounts:
+          #  - name:  nginx-data
+          #    mountPath: /usr/share/nginx/html # mount inside of contianer
+      #volumes:
+      #  - name: nginx-data
+      #    persistentVolumeClaim:
+      #      claimName: nginx
