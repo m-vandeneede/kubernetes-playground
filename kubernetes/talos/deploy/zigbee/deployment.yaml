@@ -3,7 +3,6 @@ kind: Deployment
 metadata:
   name: zigbee2mqtt
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: zigbee2mqtt
@@ -15,7 +14,7 @@ spec:
         release: zigbee2mqtt
     spec:
       automountServiceAccountToken: false
-      
+
       strategy:
         type: RollingUpdate
         rollingUpdate:
