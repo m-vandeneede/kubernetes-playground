@@ -1,10 +1,16 @@
-kind: Endpoints
-apiVersion: v1
+apiVersion: discovery.k8s.io/v1
+kind: EndpointSlice
 metadata:
   name: jellyfin
-subsets:
+  labels:
+    kubernetes.io/service-name: jellyfin
+addressType: IPv4
+ports:
+  - name: http
+    protocol: TCP
+    port: 8096
+endpoints:
   - addresses:
-      - ip: 192.168.100.5
-    ports:
-      - port: 8096
-        name: http
+      - "192.168.100.5"
+    conditions:
+      ready: true
