@@ -24,7 +24,7 @@ spec:
         - name: "ZIGBEE2MQTT_CONFIG_MQTT_BASE_TOPIC"
           value: "zigbee2mqtt"
         - name: "ZIGBEE2MQTT_CONFIG_MQTT_SERVER"
-          value: "mqtt://mosquitto.mosquitto.svc.cluster.local:1883"
+          value: "mqtt://mqtt.vandeneede.org:1883"
         - name: "ZIGBEE2MQTT_CONFIG_MQTT_USER"
           valueFrom:
             secretKeyRef:
@@ -70,7 +70,6 @@ spec:
           name: dongle
         securityContext:
           privileged: true
-          allowPrivilegeEscalation: false
         # --- Probes ---
         readinessProbe:
           failureThreshold: 6
