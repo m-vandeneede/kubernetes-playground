@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: seerr
+spec:
+  selector:
+    matchLabels:
+      app: seerr
+      release: seerr
+  template:
+    metadata:
+      labels:
+        app: seerr
+        release: seerr
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        fsGroup: 65534
+        fsGroupChangePolicy: OnRootMismatch
+      containers:
+      - image: ghcr.io/seerr-team/seerr:latest
+        imagePullPolicy: Always
+        name: seerr
+        securityContext:
+            runAsUser: 65534
+            runAsGroup: 65534
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+        ports:
+          - containerPort: 5055
+            name: http
+            protocol: TCP
+        volumeMounts:
+          - mountPath: /app/config
+            name: config
+        livenessProbe:
+          tcpSocket:
+            port: 5055
+          initialDelaySeconds: 0
+          failureThreshold: 3
+          timeoutSeconds: 1
+          periodSeconds: 10
+        readinessProbe:
+          tcpSocket:
+            port: 5055
+          initialDelaySeconds: 0
+          failureThreshold: 3
+          timeoutSeconds: 1
+          periodSeconds: 10
+        startupProbe:
+          tcpSocket:
+            port: 5055
+          initialDelaySeconds: 0
+          failureThreshold: 30
+          timeoutSeconds: 1
+          periodSeconds: 5
+        
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: seerr
