@@ -1,0 +1,30 @@
+prometheus:
+  ingress:
+    enabled: true
+    ingressClassName: internal
+    hosts:
+      - prometheus.vandeneede.org
+  prometheusSpec:
+    retention: 30d
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: longhorn
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 10Gi
+
+grafana:
+  persistence:
+    enabled: true
+    storageClassName: longhorn
+    accessModes:
+      - ReadWriteOnce
+    size: 10Gi
+  ingress:
+    enabled: true
+    ingressClassName: internal
+    hosts:
+      - grafana.vandeneede.org
