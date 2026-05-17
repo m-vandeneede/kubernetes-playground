@@ -1,10 +1,9 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  annotations:
-    kubernetes.io/ingress.class: internal
   name: zigbee2mqtt
 spec:
+  ingressClassName: internal
   rules:
   - host: zigbee.vandeneede.org
     http:
