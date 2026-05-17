@@ -1,0 +1,53 @@
+# LinuxServer.io container - Cannot enforce rootless s6-overlay but process will run as non-root user (PUID/PGID) and container will use a seccomp profile.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: home-assistant
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: home-assistant
+      release: home-assistant
+  template:
+    metadata:
+      labels:
+        app: home-assistant
+        release: home-assistant
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+      containers:
+      - image: lscr.io/linuxserver/homeassistant:2026.5.2
+        imagePullPolicy: Always
+        name: home-assistant
+        securityContext:
+          seccompProfile:
+            type: RuntimeDefault
+
+        env:
+        - name: TZ
+          value: "Europe/Brussels"
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        ports:
+        - containerPort: 8123
+          name: http
+          protocol: TCP
+        - containerPort: 5683
+          name: colot
+          protocol: UDP
+        volumeMounts:
+        - mountPath: /config
+          name: config
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: home-assistant

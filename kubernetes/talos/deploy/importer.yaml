@@ -1,0 +1,81 @@
+# Temporary pod to attach to a PVC and import data from the SFTP server. This pod will be deleted after the import is complete.
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sftp-importer-pod
+  labels:
+    app: sftp-importer-pod
+
+spec:
+  restartPolicy: Never
+  automountServiceAccountToken: false
+
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    runAsGroup: 1000
+    fsGroup: 1000
+    fsGroupChangePolicy: OnRootMismatch
+    seccompProfile:
+      type: RuntimeDefault
+
+  containers:
+    - name: sftp
+      image: drakkan/sftpgo:v2.7.0-alpine
+      imagePullPolicy: IfNotPresent
+
+      command:
+        - sftpgo
+
+      args:
+        - portable
+        - --directory=/data
+        - --sftpd-port=2022
+        - --username=admin
+        - --password=admin123
+        - "--permissions=*"
+
+      ports:
+        - name: sftp
+          containerPort: 2022
+
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
+        seccompProfile:
+          type: RuntimeDefault
+
+      volumeMounts:
+        - name: data
+          mountPath: /data
+
+        - name: sftpgo-state
+          mountPath: /var/lib/sftpgo
+
+  volumes:
+    - name: data
+      persistentVolumeClaim:
+        claimName: {}
+
+    - name: sftpgo-state
+      emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sftp-importer-service
+spec:
+  type: NodePort
+  selector:
+    app: sftp-importer-pod
+  ports:
+    - name: sftp
+      port: 2022
+      targetPort: 2022
+      nodePort: 30022
