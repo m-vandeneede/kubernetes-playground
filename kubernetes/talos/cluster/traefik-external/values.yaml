@@ -58,4 +58,4 @@ service:
   enabled: true
   type: LoadBalancer
   annotations:
-    metallb.io/loadBalancerIPs: 10.71.0.11
+    metallb.io/loadBalancerIPs: 10.72.0.10
