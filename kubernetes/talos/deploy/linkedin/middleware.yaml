@@ -1,0 +1,10 @@
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: redirect-to-linkedin
+  namespace: home-assistant
+spec:
+  redirectRegex:
+    regex: "^https?://in.vandeneede.org.*$"
+    replacement: "https://www.linkedin.com/in/maxim-van-den-eede/"
+    permanent: true
