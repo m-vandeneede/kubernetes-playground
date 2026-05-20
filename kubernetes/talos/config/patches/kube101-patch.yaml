@@ -43,5 +43,5 @@ name: longhorn # name is used to identify the volume /var/mnt/<name>
 provisioning:
   diskSelector:
     match: disk.dev_path == "/dev/sdb"
-  grow: false
-  maxSize: 100GB
+  grow: true
+  maxSize: 150GB
