@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  labels:
+    app: postgres
+    release: postgres
+  annotations:
+    metallb.io/loadBalancerIPs: 10.71.0.11
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 5432
+      targetPort: postgres
+      protocol: TCP
+      name: postgres
+  selector:
+    app: postgres
+    release: postgres
