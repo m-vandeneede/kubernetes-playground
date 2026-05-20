@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: splitpro
+spec:
+  ingressClassName: external
+  rules:
+  - host: splitpro.vandeneede.org
+    http:
+      paths:
+      - backend:
+          service:
+            name: splitpro
+            port:
+              name: http
+        path: /
+        pathType: ImplementationSpecific
