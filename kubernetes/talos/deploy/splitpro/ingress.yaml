@@ -12,6 +12,6 @@ spec:
           service:
             name: splitpro
             port:
-              name: http
+              name: splitpro
         path: /
         pathType: ImplementationSpecific
