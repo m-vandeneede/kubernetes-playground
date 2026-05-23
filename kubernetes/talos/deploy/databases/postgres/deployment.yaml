@@ -17,6 +17,8 @@ spec:
       securityContext:
         fsGroup: 65534
         fsGroupChangePolicy: OnRootMismatch
+      imagePullSecrets:
+        - name: regcred
       containers:
         - name: postgres
           image: ghcr.io/m-vandeneede/postgres-cron:18.4
