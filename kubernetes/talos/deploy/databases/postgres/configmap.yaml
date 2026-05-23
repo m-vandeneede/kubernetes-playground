@@ -8,7 +8,7 @@ data:
     listen_addresses = '*'
 
     # Database where pg_cron metadata/jobs live
-    cron.database_name = 'postgres'
+    cron.database_name = 'splitpro'
 
     # Optional timezone
     cron.timezone = 'Europe/Brussels'
