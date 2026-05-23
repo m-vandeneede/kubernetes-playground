@@ -41,6 +41,9 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /var/lib/postgresql
+            - name: postgres-config
+              mountPath: /etc/postgresql/postgresql.conf
+              subPath: postgresql.conf
           env:
             - name: POSTGRES_DB
               value: "postgres"
@@ -54,6 +57,9 @@ spec:
                 secretKeyRef:
                   name: postgres-secret
                   key: password
+          args:
+            - "-c"
+            - "config_file=/etc/postgresql/postgresql.conf"
 
           livenessProbe:
             tcpSocket:
@@ -80,3 +86,6 @@ spec:
         - name: data
           persistentVolumeClaim:
             claimName: postgres-data
+        - name: postgres-config
+          configMap:
+            name: postgres-pg-cron-config

@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-pg-cron-config
+data:
+  postgresql.conf: |
+    shared_preload_libraries = 'pg_cron'
+
+    # Database where pg_cron metadata/jobs live
+    cron.database_name = 'postgres'
+
+    # Optional timezone
+    cron.timezone = 'Europe/Brussels'
+
+    # Optional logging
+    cron.log_run = off
+    cron.log_statement = off
