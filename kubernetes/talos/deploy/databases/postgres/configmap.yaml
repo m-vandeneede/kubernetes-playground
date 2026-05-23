@@ -5,6 +5,7 @@ metadata:
 data:
   postgresql.conf: |
     shared_preload_libraries = 'pg_cron'
+    listen_addresses = '*'
 
     # Database where pg_cron metadata/jobs live
     cron.database_name = 'postgres'
