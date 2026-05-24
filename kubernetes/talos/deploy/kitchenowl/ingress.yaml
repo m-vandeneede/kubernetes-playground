@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kitchenowl
+spec:
+  ingressClassName: external
+  rules:
+  - host: kitchen.vandeneede.org
+    http:
+      paths:
+      - backend:
+          service:
+            name: kitchenowl
+            port:
+              name: http
+        path: /
+        pathType: ImplementationSpecific
