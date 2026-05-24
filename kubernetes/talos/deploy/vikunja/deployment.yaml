@@ -1,0 +1,96 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vikunja
+spec:
+  progressDeadlineSeconds: 600
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: vikunja
+      release: vikunja
+  template:
+    metadata:
+      labels:
+        app: vikunja
+        release: vikunja
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        fsGroup: 65534
+        fsGroupChangePolicy: OnRootMismatch
+      restartPolicy: IfNotPresent
+      terminationGracePeriodSeconds: 30
+      containers:
+        # --- General ---
+      - image: vikunja/vikunja:latest
+        imagePullPolicy: Always
+        name: vikunja
+        securityContext:
+          runAsUser: 65534
+          runAsGroup: 65534
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
+          runAsNonRoot: true
+          seccompProfile:
+            type: RuntimeDefault
+        # ---------------
+      
+        # --- Network ---
+        ports:
+        - containerPort: 3456
+          name: http
+          protocol: TCP
+        # ---------------
+
+        # --- Env ---
+        env:
+        - name: VIKUNJA_SERVICE_PUBLICURL
+          value: https://tasks.vandeneede.org
+        - name: VIKUNJA_SERVICE_ENABLEREGISTRATION
+          value: "false"
+        - name: VIKUNJA_DATABASE_TYPE
+          value: postgres
+        - name: VIKUNJA_DATABASE_HOST
+          value: postgres.databases.svc.cluster.local:5432
+        - name: VIKUNJA_DATABASE_USER
+          value: vikunja
+        - name: VIKUNJA_DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: db-password
+              name: vikunja-secrets
+        # ---------------
+
+        # --- Probes ---
+        readinessProbe:
+          failureThreshold: 6
+          successThreshold: 1
+          initialDelaySeconds: 0
+          timeoutSeconds: 1
+          periodSeconds: 5
+          httpGet:
+            scheme: HTTP
+            port: 3456
+            path: /
+        livenessProbe:
+          failureThreshold: 6
+          successThreshold: 1
+          initialDelaySeconds: 0
+          timeoutSeconds: 1
+          periodSeconds: 5
+          tcpSocket:
+            port: 3456
+        # ---------------
+
+        # --- Mounts ---
+        volumeMounts:
+        - mountPath: /app/vikunja/files
+          name: files
+        #  ---------------
+      volumes:
+      - name: files
+        persistentVolumeClaim:
+          claimName: vikunja-files

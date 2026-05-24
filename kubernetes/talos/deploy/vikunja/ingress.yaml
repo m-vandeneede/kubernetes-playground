@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: vikunja-ingress
+spec:
+  ingressClassName: external
+  rules:
+  - host: tasks.vandeneede.org
+    http:
+      paths:
+      - backend:
+          service:
+            name: vikunja-service
+            port:
+              name: http
+        path: /
+        pathType: ImplementationSpecific
