@@ -1,0 +1,10 @@
+kind: Endpoints
+apiVersion: v1
+metadata:
+  name: backupvault
+subsets:
+  - addresses:
+      - ip: 192.168.100.15
+    ports:
+      - port: 5000
+        name: http

@@ -1,0 +1,10 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: vault
+spec:
+  ports:
+  - protocol: TCP
+    port: 5000
+    name: http
+    targetPort: 5000

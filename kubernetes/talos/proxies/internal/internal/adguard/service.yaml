@@ -1,0 +1,10 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: adguard
+spec:
+  ports:
+  - protocol: TCP
+    port: 88
+    name: http
+    targetPort: 88

@@ -1,0 +1,10 @@
+kind: Endpoints
+apiVersion: v1
+metadata:
+  name: southpark
+subsets:
+  - addresses:
+      - ip: 192.168.3.2
+    ports:
+      - port: 8006
+        name: http

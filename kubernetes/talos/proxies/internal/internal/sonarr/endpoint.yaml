@@ -1,0 +1,10 @@
+kind: Endpoints
+apiVersion: v1
+metadata:
+  name: sonarr
+subsets:
+  - addresses:
+      - ip: 192.168.3.40
+    ports:
+      - port: 8989
+        name: http
