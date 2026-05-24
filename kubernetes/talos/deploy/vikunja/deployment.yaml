@@ -19,12 +19,12 @@ spec:
       securityContext:
         fsGroup: 65534
         fsGroupChangePolicy: OnRootMismatch
-      restartPolicy: IfNotPresent
+      restartPolicy: Always
       terminationGracePeriodSeconds: 30
       containers:
         # --- General ---
       - image: vikunja/vikunja:latest
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         name: vikunja
         securityContext:
           runAsUser: 65534
