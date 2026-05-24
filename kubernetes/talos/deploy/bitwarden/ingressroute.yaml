@@ -1,0 +1,20 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: internal
+  name: bitwarden
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`password.vandeneede.org`) && PathPrefix(`/notifications/hub`)
+      services:
+        - name: bitwarden
+          port: 3012
+    - kind: Rule
+      match: Host(`password.vandeneede.org`)
+      services:
+        - name: bitwarden
+          port: 80
