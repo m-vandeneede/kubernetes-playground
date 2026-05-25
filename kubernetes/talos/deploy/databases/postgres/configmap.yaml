@@ -4,7 +4,7 @@ metadata:
   name: postgres-pg-cron-config
 data:
   postgresql.conf: |
-    shared_preload_libraries = 'pg_cron, vchord.so'
+    shared_preload_libraries = 'pg_cron, vchord'
     listen_addresses = '*'
 
     # Database where pg_cron metadata/jobs live
