@@ -21,7 +21,7 @@ spec:
         - name: regcred
       containers:
         - name: postgres
-          image: ghcr.io/m-vandeneede/postgres-cron:18.4
+          image: ghcr.io/m-vandeneede/postgres-homelab:18.4
           imagePullPolicy: IfNotPresent
           securityContext:
             runAsUser: 65534
