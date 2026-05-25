@@ -22,7 +22,7 @@ spec:
       containers:
         - name: postgres
           image: ghcr.io/m-vandeneede/postgres-homelab:18.4
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: always
           securityContext:
             runAsUser: 65534
             runAsGroup: 65534
