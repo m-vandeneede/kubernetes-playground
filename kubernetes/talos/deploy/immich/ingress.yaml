@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: immich
+spec:
+  ingressClassName: external
+  rules:
+  - host: photos.vandeneede.org
+    http:
+      paths:
+      - backend:
+          service:
+            name: immich
+            port:
+              name: http
+        path: /
+        pathType: ImplementationSpecific

@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: immich-redis
+spec:
+  progressDeadlineSeconds: 600
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: immich-redis
+      release: immich-redis
+  template:
+    metadata:
+      labels:
+        app: immich-redis
+        release: immich-redis
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        fsGroup: 65534
+        fsGroupChangePolicy: OnRootMismatch
+
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      containers:
+        # --- General ---
+        - image: docker.io/redis:6.2-alpine@sha256:905c4ee67b8e0aa955331960d2aa745781e6bd89afc44a8584bfd13bc890f0ae
+          imagePullPolicy: IfNotPresent
+          name: immich-redis
+          securityContext:
+            runAsUser: 65534
+            runAsGroup: 65534
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+          # ---------------
+          volumeMounts:
+            - mountPath: /data
+              name: immich-redis-data
+          # --- Network ---
+          ports:
+            - containerPort: 6379
+              name: redis
+              protocol: TCP
+          # ---------------
+
+      volumes:
+        - name: immich-redis-data
+          persistentVolumeClaim:
+            claimName: immich-redis-data

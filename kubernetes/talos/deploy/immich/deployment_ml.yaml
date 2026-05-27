@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: immich-ml
+spec:
+  progressDeadlineSeconds: 600
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: immich-ml
+      release: immich-ml
+  template:
+    metadata:
+      labels:
+        app: immich-ml
+        release: immich-ml
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        fsGroup: 65534
+        fsGroupChangePolicy: OnRootMismatch
+
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      containers:
+        # --- General ---
+        - image: ghcr.io/immich-app/immich-machine-learning:v2
+          imagePullPolicy: IfNotPresent
+          name: immich-ml
+
+          securityContext:
+            runAsUser: 65534
+            runAsGroup: 65534
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+
+          env:
+            - name: DB_HOSTNAME
+              value: postgres.databases.svc.cluster.local
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: immich
+                  key: db-user
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: immich
+                  key: db-password
+            - name: DB_DATABASE_NAME
+              value: immich
+            - name: REDIS_HOSTNAME
+              value: immich-redis.immich.svc.cluster.local
+            - name: IMMICH_MACHINE_LEARNING_URL
+              value: http://immich-ml.immich.svc.cluster.local:3003
+            - name: IMMICH_PORT
+              value: "3003"
+          # ---------------
+          # --- Network ---
+          ports:
+            - containerPort: 3003
+              name: ml
+              protocol: TCP
+          # ---------------
+          # --- Mounts ---
+          volumeMounts:
+            - mountPath: /cache
+              name: immich-ml-cache
+            - mountPath: /.cache
+              name: immich-ml-cache
+            - mountPath: /.config
+              name: immich-ml-cache
+              
+          # ---------------
+      volumes:
+        - name: immich-ml-cache
+          persistentVolumeClaim:
+            claimName: immich-ml-cache-data
