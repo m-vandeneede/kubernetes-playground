@@ -20,7 +20,7 @@ spec:
         fsGroup: 1000
         fsGroupChangePolicy: OnRootMismatch
       containers:
-      - image: lscr.io/linuxserver/homeassistant:2026.5.2
+      - image: lscr.io/linuxserver/homeassistant:2026.6.2
         imagePullPolicy: Always
         name: home-assistant
         securityContext:
