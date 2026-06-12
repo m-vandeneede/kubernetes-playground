@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mainsail-config
+data:
+  config.json: |
+    {
+      "instancesDB": "json",
+      "instances": [
+        {
+          "name": "Printer",
+          "hostname": "moonraker.vandeneede.org",
+          "port": 443,
+          "path": "/"
+        }
+      ]
+    }

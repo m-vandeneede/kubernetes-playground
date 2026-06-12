@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mainsail
+spec:
+  selector:
+    matchLabels:
+      app: mainsail
+      release: mainsail
+  template:
+    metadata:
+      labels:
+        app: mainsail
+        release: mainsail
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        fsGroup: 65534
+        fsGroupChangePolicy: OnRootMismatch
+
+      containers:
+        - image: ghcr.io/mainsail-crew/mainsail:edge-unprivileged
+          imagePullPolicy: IfNotPresent
+          name: mainsail
+          ports:
+            - containerPort: 8080
+              name: http
+              protocol: TCP
+
+          # --- Security ---
+          securityContext:
+            runAsUser: 65534
+            runAsGroup: 65534
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+          # ---------------
+
+          # --- Probes ---
+          readinessProbe:
+            failureThreshold: 6
+            successThreshold: 1
+            initialDelaySeconds: 0
+            timeoutSeconds: 1
+            periodSeconds: 5
+            httpGet:
+              scheme: HTTP
+              port: 8080
+              path: /
+          livenessProbe:
+            failureThreshold: 6
+            successThreshold: 1
+            initialDelaySeconds: 0
+            timeoutSeconds: 1
+            periodSeconds: 5
+            tcpSocket:
+              port: 8080
+
+          volumeMounts:
+            - name: config
+              mountPath: /usr/share/nginx/html/config.json
+              subPath: config.json
+
+      volumes:
+        - name: config
+          configMap:
+            name: mainsail-config
+            
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30

@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: moonraker
+spec:
+  ingressClassName: internal
+  rules:
+  - host: moonraker.vandeneede.org
+    http:
+      paths:
+      - backend:
+          service:
+            name: moonraker
+            port:
+              name: http
+        path: /
+        pathType: ImplementationSpecific

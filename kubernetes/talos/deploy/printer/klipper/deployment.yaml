@@ -1,0 +1,92 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: klipper-stack
+spec:
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: klipper-stack
+      release: klipper-stack
+  template:
+    metadata:
+      labels:
+        app: klipper-stack
+        release: klipper-stack
+    spec:
+      automountServiceAccountToken: false
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+
+      containers:
+        - name: klipper
+          image: mkuf/klipper:latest
+          imagePullPolicy: IfNotPresent
+
+          securityContext:
+            privileged: true # Required for printer serial access
+            runAsUser: 0
+            runAsGroup: 0
+
+          volumeMounts:
+            - name: gcode
+              mountPath: /opt/printer_data/gcodes
+            - name: sock
+              mountPath: /opt/printer_data/run
+            - name: config
+              mountPath: /opt/printer_data/config
+
+          resources:
+            limits:
+              devic.es/printer: "1"
+
+        - name: moonraker
+          image: mkuf/moonraker:latest
+          imagePullPolicy: IfNotPresent
+
+          ports:
+            - containerPort: 7125
+              name: http
+              protocol: TCP
+
+          securityContext:
+            privileged: true # Required for printer serial access
+            runAsUser: 0
+            runAsGroup: 0
+
+          volumeMounts:
+            - name: gcode
+              mountPath: /opt/printer_data/gcodes
+            - name: sock
+              mountPath: /opt/printer_data/run
+            - name: config
+              mountPath: /opt/printer_data/config
+
+          readinessProbe:
+            failureThreshold: 6
+            successThreshold: 1
+            initialDelaySeconds: 0
+            timeoutSeconds: 1
+            periodSeconds: 5
+            httpGet:
+              scheme: HTTP
+              port: 7125
+              path: /
+          livenessProbe:
+            failureThreshold: 6
+            successThreshold: 1
+            initialDelaySeconds: 0
+            timeoutSeconds: 1
+            periodSeconds: 5
+            tcpSocket:
+              port: 7125
+
+      volumes:
+        - name: gcode
+          persistentVolumeClaim:
+            claimName: gcode
+        - name: sock
+          emptyDir: {}
+        - name: config
+          persistentVolumeClaim:
+            claimName: klipper
