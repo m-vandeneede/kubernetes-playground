@@ -92,8 +92,8 @@ spec:
             failureThreshold: 6
             successThreshold: 1
             initialDelaySeconds: 0
-            timeoutSeconds: 1
-            periodSeconds: 5
+            timeoutSeconds: 3
+            periodSeconds: 10
             httpGet:
               scheme: HTTP
               port: 3000
@@ -101,11 +101,13 @@ spec:
           livenessProbe:
             failureThreshold: 6
             successThreshold: 1
-            initialDelaySeconds: 0
-            timeoutSeconds: 1
-            periodSeconds: 5
-            tcpSocket:
+            initialDelaySeconds: 30
+            timeoutSeconds: 3
+            periodSeconds: 10
+            httpGet:
+              scheme: HTTP
               port: 3000
+              path: /
 
       volumes:
         - name: data
