@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongo
+spec:
+  revisionHistoryLimit: 3
+  serviceName: mongo-headless
+  selector:
+    matchLabels:
+      app: mongo
+      release: mongo
+  template:
+    metadata:
+      labels:
+        app: mongo
+        release: mongo
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        fsGroup: 65534
+        fsGroupChangePolicy: OnRootMismatch
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+
+      containers:
+        - name: mongo
+          image: mongo:8.3-noble
+          imagePullPolicy: IfNotPresent
+
+          securityContext:
+            runAsUser: 65534
+            runAsGroup: 65534
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+
+          volumeMounts:
+            - name: database
+              mountPath: /data/db
+
+          ports:
+            - name: mongo
+              containerPort: 27017
+              protocol: TCP
+
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-secret
+                  key: user
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-secret
+                  key: password
+
+          livenessProbe:
+            tcpSocket:
+              port: 27017
+            initialDelaySeconds: 0
+            failureThreshold: 3
+            timeoutSeconds: 1
+            periodSeconds: 10
+          readinessProbe:
+            tcpSocket:
+              port: 27017
+            initialDelaySeconds: 0
+            failureThreshold: 3
+            timeoutSeconds: 1
+            periodSeconds: 10
+          startupProbe:
+            tcpSocket:
+              port: 27017
+            initialDelaySeconds: 0
+            failureThreshold: 30
+            timeoutSeconds: 1
+            periodSeconds: 5
+
+      volumes:
+        - name: database
+          persistentVolumeClaim:
+            claimName: mongo-db
