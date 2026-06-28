@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: unifi
+spec:
+  internalTrafficPolicy: Cluster
+  ports:
+    - name: stun
+      port: 3478
+      protocol: UDP
+      targetPort: stun
+    - name: syslog
+      port: 5514
+      protocol: UDP
+      targetPort: syslog
+    - name: discovery
+      port: 10001
+      protocol: UDP
+      targetPort: discovery
+    - name: device
+      port: 8080
+      protocol: TCP
+      targetPort: device
+    - name: speedtest
+      port: 6789
+      protocol: TCP
+      targetPort: speedtest
+  selector:
+    app: unifi
+    release: unifi
+  type: LoadBalancer
+  loadBalancerIP: 10.71.0.13
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: unifi-ingress
+spec:
+  internalTrafficPolicy: Cluster
+  ports:
+    - name: admin
+      port: 8443
+      protocol: TCP
+      targetPort: admin
+  selector:
+    app: unifi
+    release: unifi
+  type: ClusterIP

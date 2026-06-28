@@ -1,0 +1,110 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: unifi
+spec:
+  progressDeadlineSeconds: 600
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: unifi
+      release: unifi
+  template:
+    metadata:
+      labels:
+        app: unifi
+        release: unifi
+    spec:
+      automountServiceAccountToken: false
+
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      containers:
+        - image: linuxserver/unifi-network-application:latest
+          imagePullPolicy: IfNotPresent
+          name: unifi
+
+          securityContext:
+            allowPrivilegeEscalation: false
+            seccompProfile:
+              type: RuntimeDefault
+
+          env:
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: TZ
+              value: Europe/Brussels
+            - name: MONGO_HOST
+              value: mongo.databases.svc.cluster.local
+            - name: MONGO_PORT
+              value: "27017"
+            - name: MONGO_USER
+              valueFrom:
+                secretKeyRef:
+                  name: unifi-secrets
+                  key: mongo-user
+            - name: MONGO_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: unifi-secrets
+                  key: mongo-password
+            - name: MONGO_DBNAME
+              value: unifi
+            - name: MONGO_AUTHSOURCE
+              value: admin
+
+          ports:
+            - containerPort: 8443
+              name: admin
+              protocol: TCP
+            - containerPort: 3478
+              name: stun
+              protocol: UDP
+            - containerPort: 10001
+              name: discovery
+              protocol: UDP
+            - containerPort: 8080
+              name: device
+              protocol: TCP
+            - containerPort: 1900
+              name: ssdp
+              protocol: UDP
+            - containerPort: 6789
+              name: speedtest
+              protocol: TCP
+            - containerPort: 5514
+              name: syslog
+              protocol: UDP
+
+          volumeMounts:
+            - mountPath: /config
+              name: unifi-data
+
+          livenessProbe:
+            tcpSocket:
+              port: 8443
+            initialDelaySeconds: 0
+            failureThreshold: 3
+            timeoutSeconds: 1
+            periodSeconds: 10
+          readinessProbe:
+            tcpSocket:
+              port: 8443
+            initialDelaySeconds: 0
+            failureThreshold: 3
+            timeoutSeconds: 1
+            periodSeconds: 10
+          startupProbe:
+            tcpSocket:
+              port: 8443
+            initialDelaySeconds: 0
+            failureThreshold: 30
+            timeoutSeconds: 1
+            periodSeconds: 5
+
+      volumes:
+        - name: unifi-data
+          persistentVolumeClaim:
+            claimName: unifi-data
