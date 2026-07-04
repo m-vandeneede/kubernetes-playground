@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: maintainerr
+spec:
+  selector:
+    matchLabels:
+      app: maintainerr
+      release: maintainerr
+  template:
+    metadata:
+      labels:
+        app: maintainerr
+        release: maintainerr
+    spec:
+      securityContext:
+        fsGroup: 65534
+        fsGroupChangePolicy: OnRootMismatch
+
+      containers:
+        - name: maintainerr
+          image: ghcr.io/maintainerr/maintainerr:latest
+
+          securityContext:
+            runAsUser: 65534
+            runAsGroup: 65534
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+
+          ports:
+            - containerPort: 6246
+              name: http
+              protocol: TCP
+
+          env:
+            - name: TZ
+              value: Europe/Brussels
+
+          volumeMounts:
+            - name: data
+              mountPath: /opt/data
+
+          livenessProbe:
+            httpGet:
+              path: /api/health/live
+              port: 6246
+            initialDelaySeconds: 30
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /api/health/ready
+              port: 6246
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: maintainerr-data
