@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: streamystats-jobserver
+spec:
+  selector:
+    matchLabels:
+      app: streamystats-jobserver
+      release: streamystats-jobserver
+  template:
+    metadata:
+      labels:
+        app: streamystats-jobserver
+        release: streamystats-jobserver
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        fsGroup: 65534
+        fsGroupChangePolicy: OnRootMismatch
+
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      containers:
+        # --- General ---
+        - image: ghcr.io/fredrikburmester/streamystats-job-server:v2.18.1
+          imagePullPolicy: IfNotPresent
+          name: streamystats-jobserver
+
+          securityContext:
+            runAsUser: 65534
+            runAsGroup: 65534
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+
+          env:
+            - name: NODE_ENV
+              value: production
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: streamystats
+                  key: database
+            - name: PORT
+              value: "3005"
+            - name: HOSTNAME
+              value: 0.0.0.0
+
+          # ---------------
+
+          # --- Network ---
+          ports:
+            - containerPort: 3005
+              name: http
+              protocol: TCP
+          # ---------------

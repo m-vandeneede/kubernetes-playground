@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: streamystats-nextjs
+spec:
+  internalTrafficPolicy: Cluster
+  ports:
+    - name: http
+      port: 3000
+      protocol: TCP
+      targetPort: http
+  selector:
+    app: streamystats-nextjs
+    release: streamystats-nextjs
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: streamystats-jobserver
+spec:
+  internalTrafficPolicy: Cluster
+  ports:
+    - name: http
+      port: 3005
+      protocol: TCP
+      targetPort: http
+  selector:
+    app: streamystats-jobserver
+    release: streamystats-jobserver
+  type: ClusterIP
