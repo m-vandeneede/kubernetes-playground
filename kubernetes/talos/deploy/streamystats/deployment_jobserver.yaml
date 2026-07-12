@@ -21,7 +21,7 @@ spec:
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       containers:
-        # --- General ---
+
         - image: ghcr.io/fredrikburmester/streamystats-job-server:v2.18.1
           imagePullPolicy: IfNotPresent
           name: streamystats-jobserver
@@ -50,11 +50,28 @@ spec:
             - name: HOSTNAME
               value: 0.0.0.0
 
-          # ---------------
+          readinessProbe:
+            failureThreshold: 6
+            successThreshold: 1
+            initialDelaySeconds: 0
+            timeoutSeconds: 3
+            periodSeconds: 10
+            httpGet:
+              scheme: HTTP
+              port: 3005
+              path: /health
+          livenessProbe:
+            failureThreshold: 6
+            successThreshold: 1
+            initialDelaySeconds: 30
+            timeoutSeconds: 3
+            periodSeconds: 10
+            httpGet:
+              scheme: HTTP
+              port: 3005
+              path: /health
 
-          # --- Network ---
           ports:
             - containerPort: 3005
               name: http
               protocol: TCP
-          # ---------------
