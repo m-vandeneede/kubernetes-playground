@@ -24,7 +24,7 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
         # --- General ---
-        - image: ghcr.io/immich-app/immich-machine-learning:v2
+        - image: ghcr.io/immich-app/immich-machine-learning:v3
           imagePullPolicy: IfNotPresent
           name: immich-ml
 
