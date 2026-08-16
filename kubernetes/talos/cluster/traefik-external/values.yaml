@@ -34,6 +34,9 @@ ports:
       default: true
     exposedPort: 443
     protocol: TCP
+    transport:
+      respondingTimeouts:
+        readTimeout: 0s
     http:
       tls:
         enabled: true
@@ -48,7 +51,7 @@ providers:
     publishedService:
       enabled: true
 
-ingressClass:  # @schema additionalProperties: false
+ingressClass: # @schema additionalProperties: false
   # -- Create a default IngressClass for Traefik
   enabled: true
   isDefaultClass: false
