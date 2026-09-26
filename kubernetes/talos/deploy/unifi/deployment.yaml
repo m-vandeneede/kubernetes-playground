@@ -21,7 +21,7 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
         - image: linuxserver/unifi-network-application:latest
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           name: unifi
 
           securityContext:
