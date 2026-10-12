@@ -25,7 +25,7 @@ spec:
       containers:
         # --- General ---
         - image: ghcr.io/immich-app/immich-machine-learning:v3
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           name: immich-ml
 
           securityContext:
@@ -58,6 +58,8 @@ spec:
               value: immich-redis.immich.svc.cluster.local
             - name: IMMICH_MACHINE_LEARNING_URL
               value: http://immich-ml.immich.svc.cluster.local:3003
+            - name: MACHINE_LEARNING_MODEL_REVISION
+              value: "v2"
             - name: IMMICH_PORT
               value: "3003"
           # ---------------
