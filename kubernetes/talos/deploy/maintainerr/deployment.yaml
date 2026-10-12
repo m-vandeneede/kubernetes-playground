@@ -20,6 +20,7 @@ spec:
       containers:
         - name: maintainerr
           image: ghcr.io/maintainerr/maintainerr:latest
+          imagePullPolicy: Always
 
           securityContext:
             runAsUser: 65534
