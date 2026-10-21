@@ -24,7 +24,7 @@ spec:
       containers:
         # --- General ---
       - image: vikunja/vikunja:latest
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         name: vikunja
         securityContext:
           runAsUser: 65534
