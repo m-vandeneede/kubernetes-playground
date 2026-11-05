@@ -16,7 +16,7 @@ machine:
         - 10.70.0.0/24
   install:
     disk: /dev/sda
-    image: factory.talos.dev/metal-installer/6deb61c88f80e8c9393a672ae93ee5d67364db0f120b8bd21de1e5025a921653:v1.13.0
+    image: factory.talos.dev/metal-installer/6deb61c88f80e8c9393a672ae93ee5d67364db0f120b8bd21de1e5025a921653:v1.14.5
 ---
 apiVersion: v1alpha1
 kind: HostnameConfig

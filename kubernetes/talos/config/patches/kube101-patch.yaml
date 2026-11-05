@@ -30,7 +30,7 @@ machine:
             dhcp: false
   install:
     disk: /dev/sda
-    image: factory.talos.dev/nocloud-installer-secureboot/ef4cc080b257a0f42c868da1c889990319f5244024c6e710a7211779ef5989ba:v1.13.0
+    image: factory.talos.dev/nocloud-installer-secureboot/ef4cc080b257a0f42c868da1c889990319f5244024c6e710a7211779ef5989ba:v1.14.5
 ---
 apiVersion: v1alpha1
 kind: HostnameConfig
