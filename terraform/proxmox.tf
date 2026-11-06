@@ -6,7 +6,8 @@ resource "proxmox_vm_qemu" "cluster_vm" {
   name        = each.key
   target_node = each.value.target_node.node_name
   bios        = "ovmf"
-  vm_state    = var.vm_state
+  vm_state    = try(each.value.vm_state, var.vm_state)
+  boot        = try(each.value.boot, null)
   agent       = 1
   qemu_os     = "l26"
   memory      = each.value.memory
@@ -16,14 +17,38 @@ resource "proxmox_vm_qemu" "cluster_vm" {
   machine     = "q35"
   skip_ipv6   = true
 
+  dynamic "startup_shutdown" {
+    for_each = try(each.value.startup_shutdown, null) != null ? [each.value.startup_shutdown] : []
+    content {
+      order            = startup_shutdown.value.order
+      shutdown_timeout = startup_shutdown.value.shutdown_timeout
+      startup_delay    = startup_shutdown.value.startup_delay
+    }
+  }
+
+  # Keep PCI assignment in the shared VM resource; only opted-in nodes get a device.
+  dynamic "pcis" {
+    for_each = try(each.value.gpu_pci_mapping, null) != null ? [each.value.gpu_pci_mapping] : []
+    content {
+      pci0 {
+        mapping {
+          mapping_id  = pcis.value
+          pcie        = true
+          primary_gpu = false # Retain the virtual display for the Talos console.
+          rombar      = true
+        }
+      }
+    }
+  }
+
   cpu {
     cores = each.value.cores
     type  = "host"
   }
 
   network {
-    id       = 0
-    model    = "virtio"
+    id    = 0
+    model = "virtio"
     #tag      = local.cluster_vlan
     bridge   = "vmbr0"
     firewall = false
@@ -35,24 +60,27 @@ resource "proxmox_vm_qemu" "cluster_vm" {
 
   disks {
     ide {
-      ide0 {
-        disk {
-          backup     = false
-          size       = each.value.disk_size
-          emulatessd = true
-          format     = "raw"
-          storage    = each.value.disk_pool
-          asyncio    = "io_uring"
-          discard    = true
+      dynamic "ide0" {
+        for_each = try(each.value.disk_bus, "ide") == "ide" ? [1] : []
+        content {
+          disk {
+            backup     = false
+            size       = each.value.disk_size
+            emulatessd = true
+            format     = "raw"
+            storage    = each.value.disk_pool
+            asyncio    = "io_uring"
+            discard    = true
+          }
         }
       }
       ide1 {
         cdrom {
-          iso = each.value.target_node.iso_installation
+          iso = try(each.value.iso_installation, each.value.target_node.iso_installation)
         }
       }
       dynamic "ide2" {
-        for_each = try(each.value.data_disk_size, null) != null ? [1] : []
+        for_each = try(each.value.disk_bus, "ide") == "ide" && try(each.value.data_disk_size, null) != null ? [1] : []
         content {
           disk {
             backup     = false
@@ -66,11 +94,47 @@ resource "proxmox_vm_qemu" "cluster_vm" {
         }
       }
     }
+    dynamic "scsi" {
+      for_each = try(each.value.disk_bus, "ide") == "scsi" ? [1] : []
+      content {
+        scsi0 {
+          disk {
+            backup     = false
+            size       = each.value.disk_size
+            emulatessd = true
+            format     = "raw"
+            storage    = each.value.disk_pool
+            asyncio    = "io_uring"
+            discard    = true
+            serial     = try(each.value.disk_serial, null)
+          }
+        }
+        dynamic "scsi1" {
+          for_each = try(each.value.data_disk_size, null) != null ? [1] : []
+          content {
+            disk {
+              backup     = false
+              size       = each.value.data_disk_size
+              emulatessd = true
+              format     = "raw"
+              storage    = each.value.disk_pool
+              asyncio    = "io_uring"
+              discard    = true
+              serial     = try(each.value.data_disk_serial, null)
+            }
+          }
+        }
+      }
+    }
   }
 
   efidisk {
     efitype           = "4m"
     storage           = each.value.disk_pool
-    pre_enrolled_keys = false # No secure boot, so this is not needed
+    pre_enrolled_keys = false # Leave setup mode available for Talos Secure Boot key enrollment.
+  }
+
+  lifecycle {
+    prevent_destroy = true
   }
 }

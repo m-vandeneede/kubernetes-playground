@@ -1,0 +1,51 @@
+machine:
+  kubelet:
+    extraMounts:
+      - destination: /var/mnt/longhorn
+        source: /var/mnt/longhorn
+        type: bind
+        options:
+          - rw
+          - bind
+          - rshared
+    nodeIP:
+      validSubnets:
+        - 10.70.0.0/24
+  kernel:
+    modules:
+      - name: nvme_tcp
+      - name: vfio_pci
+      # NVIDIA open-driver extensions are already in this node's schematic.
+      - name: nvidia
+      - name: nvidia_uvm
+      - name: nvidia_modeset
+      - name: nvidia_drm
+  network:
+    interfaces:
+      - interface: eth0
+        dhcp: false
+        vlans:
+          - vlanId: 70 # VLAN for cluster traffic
+            dhcp: true
+          - vlanId: 71 # VLAN for local ingress traffic
+            dhcp: false
+          - vlanId: 72 # VLAN for external ingress traffic
+            dhcp: false
+  install:
+    disk: /dev/sda
+    image: factory.talos.dev/nocloud-installer-secureboot/179a44da7532036d61547766f0272bf27283fa431dbf38614191c9116311a17c:v1.14.5
+---
+apiVersion: v1alpha1
+kind: HostnameConfig
+auto: off
+hostname: kube103.vandeneede.org
+---
+apiVersion: v1alpha1
+kind: UserVolumeConfig
+name: longhorn # Mounted at /var/mnt/longhorn
+provisioning:
+  diskSelector:
+    # Talos reports no serial for this QEMU SCSI disk; verified as the 500 GiB data disk.
+    match: disk.dev_path == "/dev/sdb" && !system_disk
+  grow: true
+  maxSize: 500GiB

@@ -1,0 +1,24 @@
+machine:
+  network:
+    interfaces:
+      - interface: eth0
+        dhcp: false
+        vlans:
+          - vlanId: 70 # VLAN for cluster traffic
+            dhcp: true
+          - vlanId: 71 # VLAN for local ingress traffic
+            dhcp: false
+          - vlanId: 72 # VLAN for external ingress traffic
+            dhcp: false
+  kubelet:
+    nodeIP:
+      validSubnets:
+        - 10.70.0.0/24
+  install:
+    disk: /dev/sda
+    image: factory.talos.dev/nocloud-installer-secureboot/c23d16533980fd972f96a79cc22130404615c16de18f43da4a40d801d4fe8d6a:v1.14.5
+---
+apiVersion: v1alpha1
+kind: HostnameConfig
+auto: off
+hostname: kube004.vandeneede.org

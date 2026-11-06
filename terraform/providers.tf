@@ -2,11 +2,11 @@ terraform {
   required_providers {
     proxmox = {
       source  = "Telmate/proxmox"
-      version = "3.0.2-rc07"
+      version = "3.0.2-rc10"
     }
     talos = {
       source  = "siderolabs/talos"
-      version = "0.11.0-beta.1"
+      version = "0.11.0"
     }
     routeros = {
       source  = "terraform-routeros/routeros"

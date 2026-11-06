@@ -8,3 +8,4 @@
 /kubernetes/talos/config/.base
 /kubernetes/talos/alt-kube
 /kubernetes/talos/cluster/longhorn/.DS_Store
+/node_modules

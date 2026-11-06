@@ -41,16 +41,6 @@ ephemeral "talos_machine_configuration" "talos_conf" {
   }
 }
 
-ephemeral "talos_client_configuration" "talos_client_conf" {
-  cluster_name = var.talos_cluster_name
-
-  client_configuration = {
-    ca_certificate     = var.talos_client_ca
-    client_certificate = var.talos_client_cert
-    client_key         = var.talos_client_key
-  }
-}
-
 #data "talos_image_factory_extensions_versions" "rpi_extensions_info" {
 #  talos_version = var.talos_version
 #  filters = {
