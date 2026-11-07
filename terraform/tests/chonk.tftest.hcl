@@ -52,12 +52,32 @@ run "safe_defaults" {
     error_message = "Each node must reference its matching role-specific boot ISO and installer."
   }
   assert {
-    condition = alltrue([for name in ["KUBE-002", "KUBE-003", "KUBE-101", "KUBE-102"] : (
+    condition = alltrue([for name in ["KUBE-003", "KUBE-102"] : (
       length(proxmox_vm_qemu.cluster_vm[name].disks[0].scsi) == 0 &&
       length(proxmox_vm_qemu.cluster_vm[name].disks[0].ide[0].ide0) == 1 &&
       proxmox_vm_qemu.cluster_vm[name].vm_state == var.vm_state
     )])
     error_message = "Existing nodes must retain their IDE layout and legacy state default."
+  }
+  assert {
+    condition = (
+      proxmox_vm_qemu.cluster_vm["KUBE-103"].usbs[0].usb0[0].device[0].device_id == "10c4:ea60" &&
+      proxmox_vm_qemu.cluster_vm["KUBE-103"].usbs[0].usb1[0].device[0].device_id == "1a86:7523" &&
+      !proxmox_vm_qemu.cluster_vm["KUBE-103"].usbs[0].usb0[0].device[0].usb3 &&
+      !proxmox_vm_qemu.cluster_vm["KUBE-103"].usbs[0].usb1[0].device[0].usb3 &&
+      alltrue([for name, vm in proxmox_vm_qemu.cluster_vm : length(vm.usbs) == 0 if name != "KUBE-103"])
+    )
+    error_message = "Only KUBE-103 may receive the Sonoff and printer USB adapters, using USB 2."
+  }
+  assert {
+    condition = alltrue([for name in ["KUBE-002", "KUBE-101"] : (
+      !contains(keys(local.cluster_vms), name) &&
+      !contains(keys(proxmox_vm_qemu.cluster_vm), name) &&
+      !contains(keys(adguard_rewrite.node_mappings), name) &&
+      !contains(keys(adguard_rewrite.cluster_mappings), name) &&
+      !contains(keys(routeros_ip_dhcp_server_lease.kube-node-ip-lease), name)
+    )])
+    error_message = "Retired CREDIGREE nodes must not remain in active VM, DNS, DHCP, or API-endpoint inventory."
   }
   assert {
     condition = alltrue([for name in ["KUBE-004", "KUBE-103"] : (

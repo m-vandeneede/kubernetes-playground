@@ -41,6 +41,25 @@ resource "proxmox_vm_qemu" "cluster_vm" {
     }
   }
 
+  # Optional serial adapters, kept in the shared VM resource like PCI passthrough.
+  dynamic "usbs" {
+    for_each = try(each.value.usb_devices, null) != null ? [each.value.usb_devices] : []
+    content {
+      usb0 {
+        device {
+          device_id = usbs.value.zigbee
+          usb3      = false
+        }
+      }
+      usb1 {
+        device {
+          device_id = usbs.value.printer
+          usb3      = false
+        }
+      }
+    }
+  }
+
   cpu {
     cores = each.value.cores
     type  = "host"

@@ -12,10 +12,6 @@ locals {
     worker       = "179a44da7532036d61547766f0272bf27283fa431dbf38614191c9116311a17c"
   }
   proxmox_nodes = {
-    CREDIGREE = {
-      node_name        = "CREDIGREE"
-      iso_installation = "fast:iso/nocloud-amd64-secureboot.iso"
-    }
     SOUTHPARK = {
       node_name        = "SOUTHPARK"
       iso_installation = "local:iso/nocloud-amd64-secureboot.iso"
@@ -34,20 +30,6 @@ locals {
       disk_device       = "/dev/sda"
       network_interface = "end0"
       talos_image       = "${local.rpi_schematic}:v${var.talos_version}"
-    }
-    KUBE-002 = {
-      hostname          = "kube002.vandeneede.org"
-      ip_address        = "10.70.0.102"
-      controlplane      = true
-      proxmox           = true
-      target_node       = local.proxmox_nodes.CREDIGREE
-      memory            = 2048
-      cores             = 2
-      disk_pool         = "fast"
-      disk_size         = "10G"
-      disk_device       = "/dev/sda"
-      network_interface = "eth0"
-      talos_image       = "factory.talos.dev/nocloud-installer/${local.amd_schematic}:v${var.talos_version}"
     }
     KUBE-003 = {
       hostname          = "kube003.vandeneede.org"
@@ -83,21 +65,6 @@ locals {
       talos_image              = "factory.talos.dev/nocloud-installer-secureboot/${local.chonk_schematics.controlplane}:v${var.talos_version}"
       publish_cluster_endpoint = var.chonk_publish_controlplane_endpoint
     }
-    KUBE-101 = {
-      hostname          = "kube101.vandeneede.org"
-      ip_address        = "10.70.0.111"
-      controlplane      = false
-      proxmox           = true
-      target_node       = local.proxmox_nodes.CREDIGREE
-      memory            = 2048
-      cores             = 2
-      disk_pool         = "fast"
-      disk_size         = "10G"
-      data_disk_size    = "100G"
-      disk_device       = "/dev/sda"
-      network_interface = "eth0"
-      talos_image       = "factory.talos.dev/nocloud-installer/${local.amd_schematic}:v${var.talos_version}"
-    }
     KUBE-102 = {
       hostname          = "kube102.vandeneede.org"
       ip_address        = "10.70.0.112"
@@ -116,6 +83,11 @@ locals {
     KUBE-103 = {
       # All functions: RTX 3060 VGA (.0) and HDMI audio (.1), isolated IOMMU group 16.
       gpu_pci_mapping = "chonk-rtx3060"
+      # Stable vendor/product IDs; both adapters were verified on CHONK.
+      usb_devices = {
+        zigbee  = "10c4:ea60"
+        printer = "1a86:7523"
+      }
       # Preserve the provider's existing startup/shutdown defaults during PCI updates.
       startup_shutdown = {
         order            = -1

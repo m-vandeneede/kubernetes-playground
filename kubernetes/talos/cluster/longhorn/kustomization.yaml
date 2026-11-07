@@ -1,0 +1,10 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Longhorn v1.13.0, pinned to the release commit rather than master-head.
+resources:
+  - https://raw.githubusercontent.com/longhorn/longhorn/c3d88832bd8cec4f38dec65e79436984871dc313/deploy/longhorn.yaml
+  - backup-configuration.yaml
+
+patches:
+  - path: settings-patch.yaml
