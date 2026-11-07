@@ -1,9 +1,14 @@
-# CHONK expansion (preparation only)
+# CHONK deployment and operations
 
-No infrastructure has been applied. Keep CREDIGREE's nodes until the new nodes,
-storage replicas, and workloads have been verified and migration is approved.
+For the separately applied host CPU power-policy experiment, exact settings,
+rollback, and measurements, see [CHONK-POWER.md](CHONK-POWER.md).
 
-## Proposed VMs
+Both CHONK VMs are deployed and running. kube004 is a healthy voting control
+plane; kube103 provides Longhorn storage, GPU passthrough, and serial devices.
+CREDIGREE's Kubernetes/etcd/Longhorn and Proxmox memberships have been removed.
+Its VM definitions are archived and disks preserved; see [RETIREMENT.md](RETIREMENT.md).
+
+## Deployed VMs
 
 | VM | Cluster address | vCPU | RAM | OS disk | Longhorn disk |
 | --- | --- | --- | --- | --- | --- |
@@ -19,11 +24,9 @@ VM IDs are assigned by Proxmox; node names do not imply VM IDs.
 ## Confirmed host prerequisites
 
 Read-only inventory found approximately 54.8 GiB host RAM and a 1 TB SN570 NVMe.
-The existing `pve/data` thin pool is approximately 794 GiB and unused, but is not
-registered in Proxmox's storage configuration. The default `chonk_disk_pool`
-(`local-lvm`) is the **proposed registration name**, not an existing storage ID.
-Register the existing thin pool for CHONK after separate approval, or override
-the variable with its eventual storage ID. Do not recreate/format the pool.
+The existing `pve/data` thin pool is approximately 794 GiB and is registered as
+`local-lvm`, matching `chonk_disk_pool`. Both VM disks and the 500 GiB Longhorn
+disk use it. Do not recreate or format the pool.
 
 `fast` and `local` both currently use the approximately 94 GiB root filesystem.
 Do not place the 500 GiB data disk there. The boot ISOs have already been uploaded
@@ -47,7 +50,7 @@ the existing node patches. Terraform does not generate CHONK-specific patches or
 apply Talos configurations. The boot ISO initially uses maintenance-mode
 networking; identify its reachable address when configuring each VM manually.
 
-## Images, storage, and GPU placeholders
+## Images, storage, and GPU
 
 Defaults match the upgraded cluster: Talos 1.14.5 and Kubernetes 1.37.2.
 The externally created schematics are pinned in `local.chonk_schematics`:
@@ -96,21 +99,23 @@ host CPU and disabled ballooning are already configured.
 Host VFIO configuration and initramfs rebuild are complete. After the approved
 reboot both functions use `vfio-pci` and cluster quorum recovered. The scoped
 Terraform apply succeeded: VM 108 now has
-`hostpci0: mapping=chonk-rtx3060,pcie=1`. Both CHONK VMs remain stopped pending
-separate startup approval. The steps below retain the host setup procedure.
+`hostpci0: mapping=chonk-rtx3060,pcie=1`. Both CHONK VMs are running.
+The steps below retain the historical host setup procedure, not pending work.
 
 The worker schematic includes `nvidia-open-gpu-kernel-modules-production` and
 `nvidia-container-toolkit-production`, suitable for the Ampere RTX 3060.
 The worker patch now requests `nvidia`, `nvidia_uvm`, `nvidia_modeset`, and
-`nvidia_drm`. This updated patch has not been sent to the live node.
+`nvidia_drm`. The patch is applied; GPU access and H.264 NVENC encoding have been
+verified in a temporary container with Secure Boot retained. Permanent NVIDIA
+device-plugin allocation versus time-slicing remains a separate decision.
 
-Before applying:
+Historical passthrough setup (completed except permanent workload allocation):
 
 1. Inspect CHONK over SSH: `lspci -nnk -s 0a:00`, `/proc/cmdline`,
    `/sys/kernel/iommu_groups/16/devices`, and the GPU's `boot_vga`/driver links.
    SSH: `ssh -i ~/.ssh/credigree -o IdentitiesOnly=yes root@192.168.3.4`.
    Inspection confirmed AMD IOMMU and interrupt remapping enabled. GPU driver
-   is `nouveau`; audio driver is `snd_hda_intel`. No persistent VFIO setup exists.
+   was initially `nouveau`; audio used `snd_hda_intel` before VFIO binding.
    The RTX 3060 is the only display adapter and has `boot_vga=1`; dedicating it
    to the VM removes it from host use. No active framebuffer or DRM user was
    reported at inspection time.
@@ -120,7 +125,7 @@ Before applying:
    Check existing bootloader configuration before changing kernel parameters.
    IOMMU groups already exist; do not add ACS override or disable Secure Boot.
    A CHONK reboot also affects kube004 and must be coordinated separately.
-   Suggested persistent host setup (not yet executed):
+   Persistent host setup applied:
 
    - `/etc/modprobe.d/vfio.conf`: `options vfio-pci ids=10de:2503,10de:228e`
    - `/etc/modprobe.d/blacklist-nouveau.conf`: `blacklist nouveau`
@@ -135,8 +140,8 @@ Before applying:
    file; do not assume a managed systemd-boot installation.
 3. Review a fresh plan targeted **only** at
    `proxmox_vm_qemu.cluster_vm["KUBE-103"]`, with `-var=chonk_vm_state=running`
-   to avoid the creation-time stopped default. Confirm only the expected PCI
-   change; do not use an unrestricted apply while legacy drift remains.
+   (now also the default). Confirm only the expected PCI change and review the
+   complete plan before applying.
 4. Drain kube103 normally, respecting PDBs, and shut it down before assigning
    the device. Plan again after shutdown and review power-state changes before
    applying. Start it and verify the PCI device is visible inside Talos.
@@ -146,24 +151,27 @@ Before applying:
    advertise `nvidia.com/gpu` for workloads; do not install another host driver
    through GPU Operator. Kubernetes GPU allocation is a separate follow-up.
 
-Longhorn's `master-head` image/CRD mismatch is independent of GPU passthrough and
-still needs resolution before relying on this worker for persistent workloads.
+Longhorn's management plane is upgraded to v1.13.0 and kube103 persistence was
+verified across detach/reattach. All 18 volumes have replicas on kube102/kube103.
+Existing volume engines still use historical `master-head`; controlled engine
+upgrades are separate work. Do not remove their active instance managers.
 
 ## Deployment gates
 
-- `chonk_vm_state = "stopped"`: create networking and boot assets first.
+- `vm_state = "running"` and `chonk_vm_state = "running"` preserve deployed VMs.
+  For new provisioning, explicitly use `chonk_vm_state = "stopped"` until ready.
 - Talos configuration is applied outside Terraform. No active machine-configuration
   application or bootstrap resource is defined, and no new cluster secrets are
   created. Reuse the existing cluster secrets when preparing configurations.
-- `chonk_publish_controlplane_endpoint = false`: do not advertise kube004's API
-  address before its API server and etcd membership are healthy.
+- API endpoint DNS follows `controlplane = true` in the active inventory;
+  kube004 no longer needs a separate publication gate.
 - The generic VM resource has `prevent_destroy` lifecycle protection.
 
-After the worker joins, verify its disk mount, Longhorn readiness and replicas
-before moving workloads. Adding a fourth control plane temporarily requires
-three votes and does not improve the failure tolerance of the existing
-three-member etcd cluster. Remove the old control plane only in a separately
-reviewed migration that restores three members and failure-domain separation.
+The remaining etcd voters are kube001, kube003, and kube004 (two votes required).
+Proxmox consists of SOUTHPARK and CHONK plus the external qdevice: three votes,
+quorum two. Both qdevice clients are connected and enabled at boot. This does
+not replace application/storage health checks or a PDB-respecting drain before
+any separately approved host maintenance.
 
 ## Validation and dry runs
 
@@ -177,42 +185,35 @@ mise exec -- terraform -chdir=terraform test
 ```
 
 The tests use mocked providers and **plan**, never apply. They cover memory/CPU,
-the 500 GiB disk and serial, stopped VMs, endpoint publication, versions, fixed
-ISO paths, and unchanged legacy VM layout.
+the 500 GiB disk and serial, running VMs, endpoint publication, versions, fixed
+ISO paths, verified SOUTHPARK sizing and IDE layout, and provisioning overrides.
 
-**Do not apply a normal full-project plan yet.** Existing `cluster_vms` definitions
-and state are stale relative to manually resized/running VMs. The attempted
-full plan showed control planes shrinking from 4 to 2 GiB and changing from
-running to stopped, then timed out during legacy VM guest-agent refresh. No
-refresh-only apply or state mutation was performed. Audit legacy drift before
-any full-project apply; it is deliberately not hidden with ignore_changes.
-
-For an exceptional, review-only plan of the additive CHONK resources:
+Review a complete live plan before applying:
 
 ```sh
-mise exec -- terraform -chdir=terraform plan -input=false \
-  '-target=proxmox_vm_qemu.cluster_vm["KUBE-004"]' \
-  '-target=proxmox_vm_qemu.cluster_vm["KUBE-103"]' \
-  '-target=routeros_ip_dhcp_server_lease.kube-node-ip-lease["KUBE-004"]' \
-  '-target=routeros_ip_dhcp_server_lease.kube-node-ip-lease["KUBE-103"]' \
-  '-target=adguard_rewrite.node_mappings["KUBE-004"]' \
-  '-target=adguard_rewrite.node_mappings["KUBE-103"]'
+mise exec -- terraform -chdir=terraform plan -input=false
 ```
 
-The expected scoped plan is **6 additions, no updates, no deletions**: two VMs,
-two DHCP leases, and two DNS records. Image Factory schematics and ISO downloads
-are not Terraform resources. The last live plan, before this simplification, was
-blocked by a RouterOS timeout connecting to 192.168.3.1:8729. The mocked tests
-cover the shared DHCP/DNS mappings. Rerun a complete live plan once connectivity
-is restored. Targeting is not a substitute for resolving full-project drift,
-nor does a plan establish that the unregistered storage exists or that a node
-can successfully boot/join.
+Sizing was reconciled with live Proxmox configuration on 2026-11-07: KUBE-003
+has 4 GiB RAM, 2 vCPUs and a 10 GiB OS disk; KUBE-102 has 16 GiB RAM, 3 vCPUs,
+a 50 GiB OS disk and a 150 GiB Longhorn disk. Power defaults now preserve all
+running VMs. State may still contain older values until refreshed; do not hide
+drift with `ignore_changes`. API DNS records follow active control-plane
+membership without a separate publication variable. Reject unexpected VM updates, disk
+changes, replacements or deletions, and investigate before applying.
 
-On this Mac, direct provider/Python LAN access failed while curl succeeded. The
-scoped plan was inspected using a temporary loopback GET-only curl relay; it
-was shut down afterward and the stored API URL was not changed. Fix local-network
-permissions/connectivity for the actual Terraform provider executables before
-deployment. Do not apply the diagnostic plan containing that temporary URL.
+The full refreshed review plan on 2026-11-07 passed with **one addition**:
+`adguard_rewrite.cluster_mappings["KUBE-004"]` (`kubelab.vandeneede.org` to
+`10.70.0.104`), and **no VM updates or deletions**. Existing startup/shutdown
+defaults are explicitly preserved by the shared VM resource. The DNS addition
+was subsequently applied from a fresh verified saved plan; the post-apply full
+plan reported **no changes**. The temporary endpoint-publication variable was
+removed. Private pre-apply state backup, plan and apply evidence are in
+`~/.talos/backups/terraform-controlplane-dns-20261107-230945/`.
+
+Historical macOS provider LAN connectivity failures and guest-agent refresh
+timeouts were observed. If they recur, report the blocked validation rather
+than bypassing refresh or applying a diagnostic plan with temporary endpoints.
 
 Keep tfvars, state, generated configs, and saved plans private: they can contain
 credentials. The Talos provider is pinned to stable 0.11.0 for the existing

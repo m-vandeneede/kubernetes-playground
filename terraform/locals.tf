@@ -37,7 +37,7 @@ locals {
       controlplane      = true
       proxmox           = true
       target_node       = local.proxmox_nodes.SOUTHPARK
-      memory            = 2048
+      memory            = 4096
       cores             = 2
       disk_pool         = "fast"
       disk_size         = "10G"
@@ -46,24 +46,23 @@ locals {
       talos_image       = "factory.talos.dev/nocloud-installer/${local.intel_schematic}:v${var.talos_version}"
     }
     KUBE-004 = {
-      hostname                 = "kube004.vandeneede.org"
-      ip_address               = "10.70.0.104"
-      controlplane             = true
-      proxmox                  = true
-      target_node              = local.proxmox_nodes.CHONK
-      memory                   = 4096
-      cores                    = 2
-      vm_state                 = var.chonk_vm_state
-      disk_pool                = var.chonk_disk_pool
-      disk_size                = "32G"
-      disk_bus                 = "scsi"
-      disk_serial              = "kube004-os"
-      boot                     = "order=scsi0;ide1;net0"
-      disk_device              = "/dev/sda"
-      network_interface        = "eth0"
-      iso_installation         = "local:iso/controlplane_secureboot.iso"
-      talos_image              = "factory.talos.dev/nocloud-installer-secureboot/${local.chonk_schematics.controlplane}:v${var.talos_version}"
-      publish_cluster_endpoint = var.chonk_publish_controlplane_endpoint
+      hostname          = "kube004.vandeneede.org"
+      ip_address        = "10.70.0.104"
+      controlplane      = true
+      proxmox           = true
+      target_node       = local.proxmox_nodes.CHONK
+      memory            = 4096
+      cores             = 2
+      vm_state          = var.chonk_vm_state
+      disk_pool         = var.chonk_disk_pool
+      disk_size         = "32G"
+      disk_bus          = "scsi"
+      disk_serial       = "kube004-os"
+      boot              = "order=scsi0;ide1;net0"
+      disk_device       = "/dev/sda"
+      network_interface = "eth0"
+      iso_installation  = "local:iso/controlplane_secureboot.iso"
+      talos_image       = "factory.talos.dev/nocloud-installer-secureboot/${local.chonk_schematics.controlplane}:v${var.talos_version}"
     }
     KUBE-102 = {
       hostname          = "kube102.vandeneede.org"
@@ -71,11 +70,11 @@ locals {
       controlplane      = false
       proxmox           = true
       target_node       = local.proxmox_nodes.SOUTHPARK
-      memory            = 2048
-      cores             = 2
+      memory            = 16384
+      cores             = 3
       disk_pool         = "fast"
-      disk_size         = "10G"
-      data_disk_size    = "100G"
+      disk_size         = "50G"
+      data_disk_size    = "150G"
       disk_device       = "/dev/sda"
       network_interface = "eth0"
       talos_image       = "factory.talos.dev/nocloud-installer/${local.intel_schematic}:v${var.talos_version}"

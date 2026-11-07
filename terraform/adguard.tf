@@ -6,7 +6,7 @@ resource "adguard_rewrite" "node_mappings" {
 resource "adguard_rewrite" "cluster_mappings" {
   for_each = {
     for k, v in local.cluster_vms : k => v
-    if try(v.controlplane, true) && try(v.publish_cluster_endpoint, true)
+    if v.controlplane
   }
   domain = "${local.cluster_hostname}.${local.cluster_domain}"
   answer = each.value.ip_address

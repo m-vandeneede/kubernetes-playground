@@ -18,7 +18,12 @@ resource "proxmox_vm_qemu" "cluster_vm" {
   skip_ipv6   = true
 
   dynamic "startup_shutdown" {
-    for_each = try(each.value.startup_shutdown, null) != null ? [each.value.startup_shutdown] : []
+    # Preserve Proxmox's existing defaults instead of planning to remove them.
+    for_each = [try(each.value.startup_shutdown, {
+      order            = -1
+      shutdown_timeout = -1
+      startup_delay    = -1
+    })]
     content {
       order            = startup_shutdown.value.order
       shutdown_timeout = startup_shutdown.value.shutdown_timeout

@@ -1,0 +1,12 @@
+[Unit]
+Description=Apply balanced host CPU power policy
+After=systemd-modules-load.service
+Before=pve-guests.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /usr/local/sbin/host-cpu-power-policy.py
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

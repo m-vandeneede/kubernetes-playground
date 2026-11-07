@@ -1,149 +1,149 @@
-variable "vm_state"	{
-	description = "State of the VMs (stopped or running)"
-	type        = string
-	default     = "stopped"
+variable "vm_state" {
+  description = "Desired power state of the deployed cluster VMs (stopped or running)."
+  type        = string
+  default     = "running"
 }
 
 # Proxmox
 variable "proxmox_token_id" {
-	description = "Proxmox API token ID"
-	type        = string
+  description = "Proxmox API token ID"
+  type        = string
 }
 variable "proxmox_token_secret" {
-	description = "Proxmox API token"
-	type        = string
-	sensitive   = true
+  description = "Proxmox API token"
+  type        = string
+  sensitive   = true
 }
 variable "proxmox_api_url" {
-    description = "Proxmox API URL"
-    type        = string
-    default     = "https://node.southpark.vandeneede.org:8006/api2/json"
+  description = "Proxmox API URL"
+  type        = string
+  default     = "https://node.southpark.vandeneede.org:8006/api2/json"
 }
 
 # RouterOS
 variable "routeros_user" {
-	description = "RouterOS username"
-	type        = string
+  description = "RouterOS username"
+  type        = string
 }
 variable "routeros_pass" {
-	description = "RouterOS password"
-	type        = string
-	sensitive   = true
+  description = "RouterOS password"
+  type        = string
+  sensitive   = true
 }
 variable "routeros_url" {
-	description = "RouterOS URL"
-	type        = string
+  description = "RouterOS URL"
+  type        = string
 }
 
 # AdGuard
 variable "adguard_user" {
-	description = "AdGuard username"
-	type        = string
+  description = "AdGuard username"
+  type        = string
 }
 variable "adguard_pass" {
-	description = "AdGuard password"
-	type        = string
-	sensitive   = true
+  description = "AdGuard password"
+  type        = string
+  sensitive   = true
 }
 variable "adguard_url" {
-	description = "AdGuard URL"
-	type        = string
+  description = "AdGuard URL"
+  type        = string
 }
 
 # Talos
 variable "talos_version" {
-	description = "Talos version to use for the cluster"
-	type        = string
-	default     = "1.14.5"
+  description = "Talos version to use for the cluster"
+  type        = string
+  default     = "1.14.5"
 }
 variable "kubernetes_version" {
-	description = "Kubernetes version to use for the cluster"
-	type        = string
-	default     = "1.37.2"
+  description = "Kubernetes version to use for the cluster"
+  type        = string
+  default     = "1.37.2"
 }
 variable "talos_cluster_endpoint" {
-	description = "Talos cluster endpoint"
-	type        = string
+  description = "Talos cluster endpoint"
+  type        = string
 }
 variable "talos_cluster_name" {
-	description = "Talos cluster name"
-	type        = string
+  description = "Talos cluster name"
+  type        = string
 }
 variable "talos_cluster_id" {
-	description = "Talos cluster ID"
-	type        = string
+  description = "Talos cluster ID"
+  type        = string
 }
 variable "talos_cluster_secret" {
-	description = "Talos cluster secret"
-	type        = string
-	sensitive   = true
+  description = "Talos cluster secret"
+  type        = string
+  sensitive   = true
 }
 variable "talos_cluster_bootstrap_token" {
-	description = "Talos cluster bootstrap token"
-	type        = string
-	sensitive   = true
+  description = "Talos cluster bootstrap token"
+  type        = string
+  sensitive   = true
 }
 variable "talos_cluster_secretbox_encryptionsecret" {
-	description = "Talos cluster secretbox encryption secret"
-	type        = string
-	sensitive   = true
+  description = "Talos cluster secretbox encryption secret"
+  type        = string
+  sensitive   = true
 }
 variable "talos_trustd_token" {
-	description = "Talos trustd token"
-	type        = string
-	sensitive   = true
+  description = "Talos trustd token"
+  type        = string
+  sensitive   = true
 }
 variable "talos_os_cert" {
-	description = "Talos OS certificate"
-	type        = string
+  description = "Talos OS certificate"
+  type        = string
 }
 variable "talos_os_key" {
-	description = "Talos OS key"
-	type        = string
-	sensitive   = true
+  description = "Talos OS key"
+  type        = string
+  sensitive   = true
 }
 variable "talos_k8s_aggregator_cert" {
-	description = "Talos Kubernetes aggregator certificate"
-	type        = string
+  description = "Talos Kubernetes aggregator certificate"
+  type        = string
 }
 variable "talos_k8s_aggregator_key" {
-	description = "Talos Kubernetes aggregator key"
-	type        = string
-	sensitive   = true
+  description = "Talos Kubernetes aggregator key"
+  type        = string
+  sensitive   = true
 }
 variable "talos_k8s_serviceaccount_key" {
-	description = "Talos Kubernetes service account key"
-	type        = string
-	sensitive   = true
+  description = "Talos Kubernetes service account key"
+  type        = string
+  sensitive   = true
 }
 variable "talos_k8s_cert" {
-	description = "Talos Kubernetes certificate"
-	type        = string
+  description = "Talos Kubernetes certificate"
+  type        = string
 }
 variable "talos_k8s_key" {
-	description = "Talos Kubernetes key"
-	type        = string
-	sensitive   = true
+  description = "Talos Kubernetes key"
+  type        = string
+  sensitive   = true
 }
 variable "talos_etcd_cert" {
-	description = "Talos etcd certificate"
-	type        = string
+  description = "Talos etcd certificate"
+  type        = string
 }
 variable "talos_etcd_key" {
-	description = "Talos etcd key"
-	type        = string
-	sensitive   = true
+  description = "Talos etcd key"
+  type        = string
+  sensitive   = true
 }
 variable "talos_client_ca" {
-	description = "Talos client CA certificate"
-	type        = string
+  description = "Talos client CA certificate"
+  type        = string
 }
 variable "talos_client_cert" {
-	description = "Talos client certificate"
-	type        = string
+  description = "Talos client certificate"
+  type        = string
 }
 variable "talos_client_key" {
-	description = "Talos client key"
-	type        = string
-	sensitive   = true
+  description = "Talos client key"
+  type        = string
+  sensitive   = true
 }

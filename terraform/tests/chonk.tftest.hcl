@@ -8,6 +8,22 @@ run "safe_defaults" {
   command = plan
 
   assert {
+    condition = alltrue([for name, vm in proxmox_vm_qemu.cluster_vm : (
+      vm.startup_shutdown[0].order == -1 &&
+      vm.startup_shutdown[0].shutdown_timeout == -1 &&
+      vm.startup_shutdown[0].startup_delay == -1
+    )])
+    error_message = "Preserve the verified startup/shutdown defaults for every deployed VM."
+  }
+  assert {
+    condition     = proxmox_vm_qemu.cluster_vm["KUBE-003"].memory == 4096 && proxmox_vm_qemu.cluster_vm["KUBE-003"].cpu[0].cores == 2 && proxmox_vm_qemu.cluster_vm["KUBE-003"].disks[0].ide[0].ide0[0].disk[0].size == "10G"
+    error_message = "KUBE-003 must retain its verified live sizing: 4 GiB, 2 vCPUs, 10 GiB OS disk."
+  }
+  assert {
+    condition     = proxmox_vm_qemu.cluster_vm["KUBE-102"].memory == 16384 && proxmox_vm_qemu.cluster_vm["KUBE-102"].cpu[0].cores == 3 && proxmox_vm_qemu.cluster_vm["KUBE-102"].disks[0].ide[0].ide0[0].disk[0].size == "50G" && proxmox_vm_qemu.cluster_vm["KUBE-102"].disks[0].ide[0].ide2[0].disk[0].size == "150G"
+    error_message = "KUBE-102 must retain its verified live sizing: 16 GiB, 3 vCPUs, 50 GiB OS and 150 GiB data disks."
+  }
+  assert {
     condition     = proxmox_vm_qemu.cluster_vm["KUBE-004"].memory == 4096 && proxmox_vm_qemu.cluster_vm["KUBE-004"].cpu[0].cores == 2
     error_message = "The control plane must have 4 GiB RAM and 2 vCPUs."
   }
@@ -29,12 +45,12 @@ run "safe_defaults" {
     error_message = "The worker needs a dedicated 500 GiB disk with the expected stable serial."
   }
   assert {
-    condition     = alltrue([for name in ["KUBE-004", "KUBE-103"] : proxmox_vm_qemu.cluster_vm[name].vm_state == "stopped" && proxmox_vm_qemu.cluster_vm[name].balloon == 0])
-    error_message = "Both VMs must start stopped, without ballooning."
+    condition     = alltrue([for name, vm in proxmox_vm_qemu.cluster_vm : vm.vm_state == "running" && vm.balloon == 0])
+    error_message = "All deployed VMs must remain running, without ballooning."
   }
   assert {
-    condition     = !contains(keys(adguard_rewrite.cluster_mappings), "KUBE-004")
-    error_message = "Cluster-endpoint publication requires a separate opt-in."
+    condition     = adguard_rewrite.cluster_mappings["KUBE-004"].answer == "10.70.0.104"
+    error_message = "The healthy kube004 control plane must be published by default."
   }
   assert {
     condition     = local.chonk_schematics.controlplane == "c23d16533980fd972f96a79cc22130404615c16de18f43da4a40d801d4fe8d6a" && local.chonk_schematics.worker == "179a44da7532036d61547766f0272bf27283fa431dbf38614191c9116311a17c"
@@ -57,7 +73,7 @@ run "safe_defaults" {
       length(proxmox_vm_qemu.cluster_vm[name].disks[0].ide[0].ide0) == 1 &&
       proxmox_vm_qemu.cluster_vm[name].vm_state == var.vm_state
     )])
-    error_message = "Existing nodes must retain their IDE layout and legacy state default."
+    error_message = "Existing nodes must retain their IDE layout and configured power state."
   }
   assert {
     condition = (
@@ -88,19 +104,27 @@ run "safe_defaults" {
   }
 }
 
-run "publish_controlplane_endpoint" {
+run "provisioning_overrides" {
   command = plan
 
   variables {
-    chonk_publish_controlplane_endpoint = true
+    chonk_vm_state = "stopped"
   }
 
   assert {
-    condition     = adguard_rewrite.cluster_mappings["KUBE-004"].answer == "10.70.0.104"
-    error_message = "Opting in must publish the new control-plane API address."
+    condition     = toset(keys(adguard_rewrite.cluster_mappings)) == toset([for name, vm in local.cluster_vms : name if vm.controlplane])
+    error_message = "API DNS records must follow control-plane membership, independently of power-state overrides."
   }
   assert {
     condition     = !contains(keys(adguard_rewrite.cluster_mappings), "KUBE-103")
     error_message = "The worker must never be published as a cluster API endpoint."
+  }
+  assert {
+    condition     = alltrue([for name in ["KUBE-004", "KUBE-103"] : proxmox_vm_qemu.cluster_vm[name].vm_state == "stopped"])
+    error_message = "Explicit provisioning overrides must keep CHONK VMs stopped."
+  }
+  assert {
+    condition     = alltrue([for name in ["KUBE-003", "KUBE-102"] : proxmox_vm_qemu.cluster_vm[name].vm_state == "running"])
+    error_message = "CHONK provisioning overrides must not stop SOUTHPARK VMs."
   }
 }

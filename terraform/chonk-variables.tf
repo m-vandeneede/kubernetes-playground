@@ -10,18 +10,12 @@ variable "chonk_disk_pool" {
 }
 
 variable "chonk_vm_state" {
-  description = "New VMs remain stopped until network reservations and boot media have been reviewed."
+  description = "Desired power state of the deployed CHONK VMs. Override to stopped only for explicitly reviewed maintenance or new provisioning."
   type        = string
-  default     = "stopped"
+  default     = "running"
 
   validation {
     condition     = contains(["stopped", "running"], var.chonk_vm_state)
     error_message = "CHONK VM state must be stopped or running."
   }
-}
-
-variable "chonk_publish_controlplane_endpoint" {
-  description = "Add kube004 to cluster endpoint DNS only after its API server and etcd membership are healthy."
-  type        = bool
-  default     = false
 }

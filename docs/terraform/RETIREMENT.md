@@ -3,15 +3,17 @@
 KUBE-002 (VM 101, `10.70.0.102`) and KUBE-101 (VM 104, `10.70.0.111`)
 were removed from etcd/Kubernetes/Longhorn on 2026-11-07. They are no longer
 in `local.cluster_vms`; their node DNS rewrites, KUBE-002 API-endpoint rewrite,
-and DHCP reservations should be deleted when an explicitly reviewed plan is applied.
+and DHCP reservations have also been removed with a scoped apply.
 
-## Preserve the VMs and disks
+## Preserve the disks and archived VM definitions
 
-The old VMs must remain powered off. Reset/reprovision them before future reuse.
-No VM or disk destruction is part of this retirement.
+The old host must remain powered off. Reset/reprovision before future reuse;
+its old Proxmox cluster configuration must not rejoin the network.
+No VM disk destruction is part of this retirement. The retired VM definitions
+were subsequently archived and removed from the shared Proxmox configuration.
 
 Terraform's `removed` block does not accept individual `for_each` instance keys.
-Before planning/applying this inventory cleanup against existing state:
+The completed inventory cleanup used this procedure (do not repeat it):
 
 1. Securely back up `terraform.tfstate` outside Git (it contains secrets).
 2. Review the exact instances to forget:
@@ -33,8 +35,27 @@ VM instances, and deleted their five DNS/DHCP records with a scoped plan.
 Neither VM nor its disks were deleted. Evidence and state backups are under
 `~/.talos/backups/usb-retirement-20261107-210934/`.
 
-Do not apply an unrestricted plan: existing RAM/power drift remains, and
-`chonk_vm_state` still defaults to `stopped` although CHONK VMs are running.
+### Proxmox retirement and witness repair
+
+CREDIGREE was removed from Corosync on 2026-11-07. CHONK's missing qdevice
+client was installed and configured with the existing cluster certificates.
+Both SOUTHPARK and CHONK report three total/expected votes, quorum two, and a
+connected, voting witness at `vault.storage.vandeneede.org`. Clients are enabled
+at boot; no expected-votes override was used. Proxmox membership and qdevice
+configuration are managed outside this Terraform configuration.
+
+The leftover `/etc/pve/nodes/CREDIGREE` directory, including VM definitions
+101 and 104, was verified against archives and removed without touching disks.
+Archives: `~/.talos/backups/proxmox-credigree-ui-cleanup-20261107-230203/`
+and `/root/credigree-node-config-20261107-230203.tar` on CHONK.
+Cluster-change evidence: `~/.talos/backups/proxmox-credigree-retirement-20261107-225853/`.
+
+Terraform defaults now preserve running VMs and verified SOUTHPARK sizing.
+API DNS follows active control-plane membership without a separate publication
+variable. The kube004 endpoint DNS record was applied on 2026-11-07 from a saved
+plan verified to contain only that addition; the post-apply full plan reported
+no changes. No VM updates or disk deletions were applied. Evidence and the
+pre-apply state backup: `~/.talos/backups/terraform-controlplane-dns-20261107-230945/`.
 
 ## USB migration to KUBE-103
 
