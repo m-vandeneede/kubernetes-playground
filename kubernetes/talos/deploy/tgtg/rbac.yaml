@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: tgtg-controller
+  namespace: tgtg
+automountServiceAccountToken: false
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: tgtg-gateway-control
+  namespace: tgtg
+rules:
+  - apiGroups: [apps]
+    resources: [deployments]
+    resourceNames: [tgtg-vpn]
+    verbs: [get]
+  - apiGroups: [apps]
+    resources: [deployments/scale]
+    resourceNames: [tgtg-vpn]
+    verbs: [get, patch]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: tgtg-gateway-control
+  namespace: tgtg
+subjects:
+  - kind: ServiceAccount
+    name: tgtg-controller
+    namespace: tgtg
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: tgtg-gateway-control

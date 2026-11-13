@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: vpn-proxy
+  namespace: tgtg
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: tgtg-vpn
+  ports:
+    - name: http-proxy
+      port: 8888
+      targetPort: http-proxy
+      protocol: TCP
