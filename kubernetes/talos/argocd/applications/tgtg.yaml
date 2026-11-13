@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: tgtg
+  namespace: argocd
+spec:
+  project: tgtg
+  destination:
+    name: KubeLAB
+    namespace: tgtg
+  source:
+    repoURL: git@github.com:m-vandeneede/kubernetes-playground.git
+    targetRevision: onboard/tgtg-argocd
+    path: kubernetes/talos/deploy/tgtg
+  ignoreDifferences:
+    - group: apps
+      kind: Deployment
+      name: tgtg-vpn
+      namespace: tgtg
+      jsonPointers:
+        - /spec/replicas
+  syncPolicy:
+    automated:
+      enabled: true
+      prune: false
+      selfHeal: false
+    syncOptions:
+      - RespectIgnoreDifferences=true
+      - FailOnSharedResource=true

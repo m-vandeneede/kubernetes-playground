@@ -1,0 +1,124 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tgtg-vpn
+  namespace: tgtg
+spec:
+  # New-installation bootstrap only. Argo must respect the Application's
+  # named /spec/replicas ignore rule; the scanner controller owns live scale.
+  replicas: 0
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: tgtg-vpn
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: tgtg-vpn
+        app.kubernetes.io/part-of: tgtg-scanner
+        app.kubernetes.io/component: vpn
+    spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      dnsConfig:
+        options:
+          # Gluetun replaces the resolver but retains the pod search configuration.
+          # Resolve external qualified names before trying cluster/domain suffixes.
+          - name: ndots
+            value: "1"
+      nodeSelector:
+        kubernetes.io/arch: amd64
+      terminationGracePeriodSeconds: 30
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: gluetun
+          image: qmcgaw/gluetun:v3.41.3@sha256:fa19cc76b2af13d57a8d3dc3066f2ada061b1c761b8aecf989b3877c0486e027
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            runAsUser: 0
+            allowPrivilegeEscalation: false
+            capabilities:
+              add:
+                - NET_ADMIN
+          env:
+            - name: VPN_SERVICE_PROVIDER
+              value: privado
+            - name: VPN_TYPE
+              value: openvpn
+            - name: SERVER_COUNTRIES
+              value: Netherlands
+            - name: OPENVPN_USER
+              valueFrom:
+                secretKeyRef:
+                  name: tgtg
+                  key: vpn-user
+            - name: OPENVPN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: tgtg
+                  key: vpn-password
+            - name: HTTPPROXY
+              value: "on"
+            - name: HTTPPROXY_LISTENING_ADDRESS
+              value: ":8888"
+            - name: HTTPPROXY_USER
+              valueFrom:
+                secretKeyRef:
+                  name: tgtg-proxy
+                  key: username
+            - name: HTTPPROXY_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: tgtg-proxy
+                  key: password
+            - name: HTTPPROXY_LOG
+              value: "off"
+            - name: HTTPPROXY_STEALTH
+              value: "on"
+            - name: FIREWALL_INPUT_PORTS
+              value: "8888"
+            - name: LOG_LEVEL
+              value: warn
+            - name: HTTP_CONTROL_SERVER_ADDRESS
+              value: "127.0.0.1:8000"
+            - name: HTTP_CONTROL_SERVER_LOG
+              value: "off"
+            - name: TZ
+              value: UTC
+          ports:
+            - name: http-proxy
+              containerPort: 8888
+          startupProbe:
+            exec:
+              command: ["/gluetun-entrypoint", "healthcheck"]
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 30
+          readinessProbe:
+            exec:
+              command: ["/gluetun-entrypoint", "healthcheck"]
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 2
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: "1"
+              memory: 512Mi
+          volumeMounts:
+            - name: tun
+              mountPath: /dev/net/tun
+            - name: state
+              mountPath: /gluetun
+      volumes:
+        - name: tun
+          hostPath:
+            path: /dev/net/tun
+            type: CharDevice
+        - name: state
+          emptyDir: {}

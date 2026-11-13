@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: tgtg-control
+  namespace: tgtg
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+spec:
+  ingressClassName: internal
+  # No secretName: internal Traefik serves its existing default TLSStore
+  # certificate from traefik-internal/vandeneede-org-production-tls.
+  tls:
+    - hosts:
+        - tgtg.vandeneede.org
+  rules:
+    - host: tgtg.vandeneede.org
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: tgtg-control
+                port:
+                  name: http
