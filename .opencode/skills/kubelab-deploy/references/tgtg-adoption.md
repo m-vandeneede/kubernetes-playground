@@ -57,3 +57,12 @@ followed by Argo sync, preserving the replica ignore rule, Secrets and PVC.
 Rolling back to a scanner image predating on-demand VPN control additionally
 requires a manually maintained ready gateway; ask before changing that lifecycle.
 Disabling/deleting the Argo app must not cascade-delete the Namespace/PVC.
+
+## Initial adoption record
+
+Onboarding on 2026-11-13 was metadata-only: twelve nonsecret resources adopted,
+Synced/Healthy after a reviewed manual sync, then automatic sync enabled without
+pruning/self-heal. Existing Pods, PVC, external Secrets and canonical settings
+were preserved. Scanning was disabled and the VPN at zero; neither was activated
+for testing. See the workload README for evidence. Do not infer current state
+from this historical record; query the live app before future changes.

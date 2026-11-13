@@ -53,3 +53,23 @@ policy afterward. Do not take over another Argo app's resources.
 For rollback, revert the reviewed Git change on the tracked branch. Keep the
 replica ignore rule, existing Secrets and PVC. Before using images predating
 on-demand VPN control, obtain permission for the additional manual gateway setup.
+
+## Adoption evidence — 2026-11-13
+
+- Initial reviewed source commit: `4e5b6e1` on `onboard/tgtg-argocd`.
+- Global `kubelab-deploy` skill installed; versioned source and validator included.
+- Validator and six regression tests passed. Kustomize renders exactly twelve
+  nonsecret resources. Server dry-runs confirmed metadata-only adoption,
+  including unchanged ConfigMap data, RBAC rules, workload templates and PVC spec.
+- The Argo Application was created manual, reviewed, synced without pruning,
+  and only then switched to automatic sync with prune/self-heal disabled.
+- Initial operation succeeded and the app became **Synced / Healthy**.
+- Existing Pod UIDs, Deployment UIDs/templates/replicas, bound PVC identity/spec,
+  external Secret UIDs/resource versions and canonical config/control hashes
+  remained unchanged. No scanner restart or login/notification test was needed.
+- Scanner activation was **disabled** before adoption and remained disabled.
+  The VPN stayed at **zero** replicas. These are preserved user state, not an
+  instruction that GitOps should force the VPN off when scanning is activated.
+
+This records the adoption check, not a promise that future Git changes cannot
+restart workloads. Review each image/template change and preserve replica ownership.
